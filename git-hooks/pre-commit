@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# create tempfile
+tempfile=$(mktemp temp.XXXXXXXXXX)
+
+# run styletest
+make styletest -s > $tempfile 2> /dev/null
+result=$?
+
+if [[ $result -eq 0 ]]; then
+    # styletest succeded
+    echo "Styletest succeeded"
+else
+    cat git-hooks/ascii
+    echo "================================================================"
+    cat $tempfile
+fi
+
+# rm tempfile and exit
+rm $tempfile
+exit $result

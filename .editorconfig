@@ -1,0 +1,25 @@
+# Editor-cofig file to maintain consistent coding style
+# Read more at `http://www.editorconfig.org`
+
+# Top level editor-config file
+root = true
+
+# Global settings
+[*]
+trim_trailing_whitespace = true
+insert_final_newline = true
+end_of_line = lf
+charset = utf-8
+
+indent_style = space
+indent_size = 4
+
+# Makefile style
+[Makefile]
+indent_style = tab
+indent_size = 8
+tab_width = 8
+
+# html style
+[*.html]
+indent_size = 2
