@@ -5,6 +5,3 @@ __pycache__/
 # Django
 *.log
 db.sqlite3
-
-# Sphinx documentation
-docs/_build/
