@@ -16,13 +16,17 @@ def index(request):
 
 def election_management(request):
     template = loader.get_template("administration_electionmanagement.html")
-    context = {}
+    context = {
+        "election": False
+    }
     return HttpResponse(template.render(context, request))
 
 
 def pupil_management(request):
     template = loader.get_template("administration_pupilmanagement.html")
-    context = {}
+    context = {
+        "election": False
+    }
     if request.method == 'POST' and request.FILES['myfile']:
         myfile = request.FILES['myfile']
         fs = FileSystemStorage()

@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block title%} Správa voleb {% endblock %}
 {% load static %}
+{% block custom_css %}
+  <link rel="stylesheet" href="{% static "css/style.css" %}">
+{% endblock %}
 {% block content %}
       {# Start of sidebar #}
       <aside class="main-sidebar">
@@ -34,11 +37,7 @@
         </section>
       </aside>
       {# End of sidebar #}
-      <div class="alert alert-warning alert-dismissible fade in">
-        <a href="#" class="close" data-dismiss="alert" aria-label="close">X</a>
-        <strong>Upozornění!</strong> Prostě jsi to podělal
-      </div>
-      <span class="glyphicon glyphicon-plus" style="color:green; font-size:40px" class="btn btn-info btn-lg" data-toggle="modal" data-target="#createNewElectionModal"></span>
+      <span class="glyphicon glyphicon-plus glyphiconplus"  data-toggle="modal" data-target="#createNewElectionModal"></span>
       <!-- Modal -->
       <div id="createNewElectionModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -59,12 +58,19 @@
                   <input type="date" class="form-control" id="election_start" required/>
                 </div>
                 <div class="form-group">
-                  <label for="election_end">Konec prvního kola:</label>
-                  <input type="date" class="form-control" id="election_end" required/>
+                  <label for="election_round_end">Trvání prvního kola:</label>
+                  <input type="text" class="form-control" id="election_round_end" placeholder="Zadejte počet dní"required/>
+                </div>
+                <div class="form-group">
+                  <label for="election_second_round_end">Trvání druhého kola:</label>
+                  <input type="text" class="form-control" id="election_second_round_end" placeholder="Zadejte počet dní"required/>
+                </div>
+                <div class="form-group">
+                  <label for="election_third_round_end">Trvání třetího kola (pokud na něj dojde):</label>
+                  <input type="text" class="form-control" id="election_third_round_end" placeholder="Zadejte počet dní"required/>
                 </div>
                 <input type="submit" class="btn btn-default" value="Založit nové volby"/>
               </form>
-
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
@@ -89,8 +95,8 @@
               <td>{{election.vote_start_time}}</td>
               <td>{{election.vote_end_time}}</td>
               <td>{{election.vote_rounds}}</td>
-              <td><span class="glyphicon glyphicon-wrench" style="color:blue; font-size:20px" class="btn btn-info btn-lg" class="btn btn-info btn-lg" data-toggle="modal" data-target="#manageElectionModal"></span></td>
-              <td><span class="glyphicon glyphicon-minus" style="color:red; font-size:20px" class="btn btn-info btn-lg"></span></td>
+              <td><span class="glyphicon glyphicon-wrench glyphiconwrench" data-toggle="modal" data-target="#manageElectionModal"></span></td>
+              <td><span class="glyphicon glyphicon-minus glyphiconminus"></span></td>
               <td></td>
             </tr>
           </tbody>
@@ -110,9 +116,20 @@
                   <label for="election_name_new">Název voleb:</label>
                   <input type="text" class="form-control" id="election_name_new" required/>
                 </div>
+                <!-- if 1 >= 1!-->
                 <div class="form-group">
-                  <label for="election_end_new">Konec voleb:</label>
-                  <input type="date" class="form-control" id="election_end_new" required/>
+                  <label for="election_end_round_new">Konec prvního kola:</label>
+                  <input type="text" class="form-control" id="election_end_round_new" placeholder="Zadejte počet dní" required/>
+                </div>
+                <!-- if 1 >= 2!-->
+                <div class="form-group">
+                  <label for="election_end_firstround_new">Konec druhého kola:</label>
+                  <input type="text" class="form-control" id="election_end_firstround_new" placeholder="Zadejte počet dní" required/>
+                </div>
+                <!-- if 1 == 3 and end != 1!-->
+                <div class="form-group">
+                  <label for="election_end_secondround_new">Konec třetího kola:</label>
+                  <input type="text" class="form-control" id="election_end_secondround_new" placeholder="Zadejte počet dní" required/>
                 </div>
                 <input type="submit" class="btn btn-default" value="Uložit změny"/>
               </form>
