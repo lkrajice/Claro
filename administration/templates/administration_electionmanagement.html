@@ -59,7 +59,7 @@
                   <input type="date" class="form-control" id="election_start" required/>
                 </div>
                 <div class="form-group">
-                  <label for="election_end">Konec voleb:</label>
+                  <label for="election_end">Konec prvního kola:</label>
                   <input type="date" class="form-control" id="election_end" required/>
                 </div>
                 <input type="submit" class="btn btn-default" value="Založit nové volby"/>
@@ -80,16 +80,18 @@
               <th>Začátek voleb</th>
               <th>Konec voleb</th>
               <th>Aktuální kolo</th>
+              <th>Fáze volby</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <td>
               <td>{{election.name}}</td>
               <td>{{election.vote_start_time}}</td>
               <td>{{election.vote_end_time}}</td>
               <td>{{election.vote_rounds}}</td>
               <td><span class="glyphicon glyphicon-wrench" style="color:blue; font-size:20px" class="btn btn-info btn-lg" class="btn btn-info btn-lg" data-toggle="modal" data-target="#manageElectionModal"></span></td>
               <td><span class="glyphicon glyphicon-minus" style="color:red; font-size:20px" class="btn btn-info btn-lg"></span></td>
+              <td></td>
             </tr>
           </tbody>
         </table>

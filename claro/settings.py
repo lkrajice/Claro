@@ -56,7 +56,7 @@ ROOT_URLCONF = 'claro.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['claro/templates'],
+        'DIRS': ['claro/templates', 'administration/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

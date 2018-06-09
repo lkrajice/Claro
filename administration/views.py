@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse
-# Create your views here.
+from django.core.files.storage import FileSystemStorage
+
 
 def index(request):
     """
@@ -19,7 +20,12 @@ def election_management(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+
 def pupil_management(request):
     template = loader.get_template("administration_pupilmanagement.html")
     context = {}
+    if request.method == 'POST' and request.FILES['myfile']:
+        myfile = request.FILES['myfile']
+        fs = FileSystemStorage()
+        filename = fs.save(myfile.name, myfile)
     return HttpResponse(template.render(context, request))

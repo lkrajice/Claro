@@ -35,7 +35,11 @@
         <a href="#" class="close" data-dismiss="alert" aria-label="close">X</a>
         <strong>Upozornění!</strong> Prostě jsi to podělal
       </div>
-
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="myfile" required>
+    <button type="submit">Nahrát</button>
+  </form>
       <div class="row">
         <div class="col-sm-6"><span class="glyphicon glyphicon-plus" style="color:green; font-size:40px;box-sizing: border-box;"  data-toggle="modal" data-target="#createNewElectionModal"></span></div>
         <div class="col-sm-6"><input type="text" style="border-radius:10px" placeholder="Vyhledávání"></div>
