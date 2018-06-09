@@ -4,11 +4,11 @@ Contains parser
 import os
 
 from .models import Student, Class, Pin
-
-
+import random
 NUMBERS = "0123456789"
 ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 SPECIAL = ",.-ůú)/*-+"
+
 
 class StudentDataFileParser:
     """
@@ -79,7 +79,7 @@ class StudentDataFileParser:
         """
         chars = []
         for i in range(pin_length):
-            chars.append(r.choice(source))
+            chars.append(random.choice(source))
         final = "".join(chars)
         return final
 

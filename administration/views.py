@@ -37,7 +37,7 @@ def pupil_management(request):
     if request.method == 'POST' and request.FILES['myfile']:
         myfile = request.FILES['myfile']
         fs = FileSystemStorage()
-        filename = fs.save(myfile.name, myfile)
+        fs.save(myfile.name, myfile)
         filepath = os.path.join(settings.MEDIA_ROOT, myfile.name)
 
         StudentDataFileParser.proccess_file(filepath)
