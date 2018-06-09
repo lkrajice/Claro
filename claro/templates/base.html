@@ -93,18 +93,19 @@
             {# End - Administration app list #}
 
             {# Start - Votes app list #}
-            {% if active_app == "votes" %}
-            <li class="treeview active">
-            {% else %}
-            <li class="treeview">
-            {% endif %}
+
+            <li class="treeview {% if metadata_active_app == "votes" %}active{% endif %}">
               <a href="#">
                 <i class="fa fa-group"></i> <span>Volby</span>
               </a>
               {# Votes app list - submenu #}
               <ul class="treeview-menu">
-                <li><a href="index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-                <li class="active"><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
+                <li {% if metadata_active_view == "overview" %}class="active" {% endif %}>
+                  <a href="overview"><i class="fa fa-circle-o"></i> Přehled aktuálnich voleb</a>
+                </li>
+                <li {% if metadata_active_view == "class_overview" %}class="active" {% endif %}>
+                  <a href="class"><i class="fa fa-circle-o"></i> Přehled tříd</a>
+                </li>
               </ul>
             </li>
             {# End - Votes app list #}
