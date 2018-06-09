@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Welcome on the site!
+{% endblock %}
+
+
+{% block custom_css %}
+{% endblock %}
+
+
+{% block content %}
+  <h1>ahoj</h1>
+{% endblock %}
+
+
+{% block nav_right_top_list %}
+<li class="messages-menu">
+  <a href="#">
+    <strong>Volby končí za x dní</strong>
+  </a>
+</li>
+{% endblock %}
+
+{% block custom_sidebar_list %}
+<ul class="sidebar-menu" data-widget="tree">
+  <li class="header">PŘEHLED JEDNOTLIVÝCH TŘID</li>
+
+    {% for letter, grades in classes.items %}
+    <li class="treeview">
+      <a href="#">
+        <i class="fa fa-share"></i><span> {{ letter }}</span>
+        <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
+      </a>
+
+      <ul class="treeview-menu" style="display: none;">
+
+        {% for grade, classes in grades.items %}
+        <li class="treeview">
+          <a href="#"><i class="fa fa-circle-o"></i> Stupeň: {{ grade }}
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+          </a>
+          <ul class="treeview-menu">
+          {% for class in classes %}
+            <li><a href="#"><i class="fa fa-circle-o"></i> {{ class }}</a></li>
+          {% endfor %}
+          </ul>
+        </li>
+        {% endfor %}
+
+      </ul>
+
+    </li>
+    {% endfor %}
+  </li>
+</ul>
+{% endblock %}
+
+
+{% block header %}
+<h1>
+  Title
+  <small>Version 2.0</small>
+</h1>
+<ol class="breadcrumb">
+  <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+  <li class="active">Dashboard</li>
+</ol>
+{% endblock %}
