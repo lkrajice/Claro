@@ -1,8 +1,13 @@
+import os
+
 from django.template import loader
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
-from . import models as mod
 from django.conf import settings
+
+from .utils import StudentDataFileParser
+
+
 def index(request):
     """
         SHOWS
@@ -27,12 +32,14 @@ def pupil_management(request):
     context = {
         "election": False
     }
+
+    # proccess uploaded file
     if request.method == 'POST' and request.FILES['myfile']:
         myfile = request.FILES['myfile']
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)
-        studentparser = mod.StudentParser(settings.MEDIA_ROOT + "\\" +myfile.name)
-        data = studentparser.get_data()
-        loaddatatodatabase = mod.LoadDataToDatabase(data)
-        loaddatatodatabase.load()
+        filepath = os.path.join(settings.MEDIA_ROOT, myfile.name)
+
+        StudentDataFileParser.proccess_file(filepath)
+
     return HttpResponse(template.render(context, request))
