@@ -8,3 +8,6 @@ db.sqlite3
 
 # Bower components
 staticfiles/components
+
+staticfiles/bower_components
+.idea
