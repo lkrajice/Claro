@@ -1,0 +1,24 @@
+{
+  "name": "Claro",
+  "homepage": "https://github.com/Lukkra211/Claro",
+  "authors": [
+    "Lukas Krajicek <lkrajice@redhat.com>",
+    "Filip Bartos <email>"
+  ],
+  "description": "Election system made as team project for middle school",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "admin-lte": "adminLTE#^2.4.3"
+  },
+  "resolutions": {
+    "jquery": "^3.2.1"
+  }
+}
