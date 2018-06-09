@@ -90,4 +90,4 @@ class LoadDataToDatabase:
     def load(self):
         for data in self.data:
             for information in data:
-                
+                pass
