@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+Správa studentů
+{% endblock %}
+
+
+{% block custom_css %}
+<link rel="stylesheet" href="{% static "css/style.css" %}">
+{% endblock %}
+
+
+{% block nav_right_top_list %}
+{% endblock %}
+
+
+{% block custom_sidebar_list %}
+{% endblock %}
+
+
+{% block header %}
+<h1>Vítejte na úvodní stránce<small>Version 2.0</small></h1>
+<ol class="breadcrumb">
+  <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+  <li class="active">Dashboard</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+{# End of sidebar #}
+{% if election == False %}
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <input type="file" name="myfile" required>
+  <button type="submit">Nahrát</button>
+</form>
+{% else %}
+  <div class="alert alert-warning alert-dismissible fade in">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">X</a>
+    <strong>Upozornění!</strong> Není možné nahrávat nové studenty pokud probíhají volby
+  </div>
+{% endif %}
+<div class="row">
+  <div class="col-sm-6"><span class="glyphicon glyphicon-plus glyphiconplus" data-toggle="modal" data-target="#createNewElectionModal"></span></div>
+  <div class="col-sm-6"><input type="text" class="searchInput" placeholder="Vyhledávání"></div>
+</div>
+
+<!-- Modal -->
+<div id="createNewElectionModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Nový student</h4>
+      </div>
+      <div class="modal-body">
+        <form action="/action_page.php">
+          <div class="form-group">
+            <label for="election_name">Jméno studenta:</label>
+            <input type="text" class="form-control" id="election_name" required/>
+          </div>
+          <div class="form-group">
+            <label for="election_start">Třída(Zkratka):</label>
+            <input type="text" class="form-control" id="election_start" required/>
+          </div>
+          <input type="submit" class="btn btn-default" value="Přidat studenta"/>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Jméno studenta</th>
+        <th>Třída</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{election.name}}</td>
+        <td>{{election.vote_start_time}}</td>
+        <td>{{election.vote_end_time}}</td>
+        <td>{{election.vote_rounds}}</td>
+        <td><span class="glyphicon glyphicon-wrench glyphiconwrench" data-toggle="modal" data-target="#manageElectionModal"></span></td>
+        <td><span class="glyphicon glyphicon-minus glyphiconminus"></span></td>
+      </tr>
+    </tbody>
+  </table>
+
+<!-- Modal -->
+<div id="manageElectionModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Upravit studenta</h4>
+      </div>
+      <div class="modal-body">
+        <form action="/action_page.php">
+          <div class="form-group">
+            <label for="election_name_new">Jméno studenta:</label>
+            <input type="text" class="form-control" id="election_name_new" required/>
+          </div>
+          <div class="form-group">
+            <label for="election_end_new">Třída:</label>
+            <input type="text" class="form-control" id="election_end_new" required/>
+          </div>
+          <input type="submit" class="btn btn-default" value="Uložit změny"/>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

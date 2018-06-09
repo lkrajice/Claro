@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+Hlavni stranka administrace
+{% endblock %}
+
+
+{% block custom_css %}
+{% endblock %}
+
+
+{% block nav_right_top_list %}
+{% endblock %}
+
+
+{% block custom_sidebar_list %}
+{% endblock %}
+
+
+{% block header %}
+<h1>Vítejte na úvodní stránce<small>Version 2.0</small></h1>
+<ol class="breadcrumb">
+  <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+  <li class="active">Dashboard</li>
+</ol>
+{% endblock %}
+
+
+{% block content %}
+    <h1></h1>
+    <div class="panel-group" id="faqAccordion">
+          <div class="panel panel-default ">
+              <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#faqAccordion" data-target="#question0">
+                   <h4 class="panel-title">
+                      <a class="ing">Jak vytvořit nové volby?</a>
+                </h4>
+              </div>
+              <div id="question0" class="panel-collapse collapse" style="height: 0px;">
+                  <div class="panel-body">
+                       <h5><span class="label label-primary">Odpověď</span></h5>
+                      <ol>
+                        <li>Klikněte nahoře vpravo na Administrace</li>
+                        <li>Vyberte Správa voleb</li>
+                        <li>Nyní jste na stránce s volbami, pokud je tabulka aktuální volby prázdná, klikněte na + pokud není musíte počkat až aktuální volby skončí nebo je zrušit</li>
+                        <li>Vyskočí na vás nové okno kde musíte zadat informace o volbách </li>
+                        <li>Klikněte na tlačítko Hotovo</li>
+                      </ol>
+                  </div>
+              </div>
+          </div>
+          <!-- !-->
+        <div class="panel panel-default ">
+              <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#faqAccordion" data-target="#question1">
+                   <h4 class="panel-title">
+                      <a class="ing">Jak upravit aktuální volby?</a>
+                </h4>
+              </div>
+              <div id="question1" class="panel-collapse collapse" style="height: 0px;">
+                  <div class="panel-body">
+                       <h5><span class="label label-primary">Odpověď</span></h5>
+                      <ol>
+                        <li>Klikněte nahoře vpravo na Administrace</li>
+                        <li>Vyberte Správa voleb</li>
+                        <li>Nyní jste na stránce s volbami. V tabulce aktivní volby vidíte právě probíhající volby, vedle názvu voleb je modrý klíč</li>
+                        <li>Klikněte na klíč a upravte volby podle svého</li>
+                        <li>Klikněte na tlačítko Hotovo</li>
+                      </ol>
+                  </div>
+              </div>
+          </div>
+       <!-- !-->
+        <div class="panel panel-default ">
+              <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#faqAccordion" data-target="#question2">
+                   <h4 class="panel-title">
+                      <a class="ing">Jak zrušit probíhající volby?</a>
+                </h4>
+              </div>
+              <div id="question2" class="panel-collapse collapse" style="height: 0px;">
+                  <div class="panel-body">
+                       <h5><span class="label label-primary">Odpověď</span></h5>
+                      <ol>
+                        <li>Klikněte nahoře vpravo na Administrace</li>
+                        <li>Vyberte Správa voleb</li>
+                        <li>Nyní jste na stránce s volbami.V tabulce aktivní volby vidíte právě probíhající volby, vedle názvu voleb je červený křížek</li>
+                        <li>Po stisknutí křížku na vás vyskočilo okno, zde potvrďte svou akci</li>
+                      </ol>
+                  </div>
+              </div>
+          </div>
+      <!-- !-->
+        <div class="panel panel-default ">
+              <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#faqAccordion" data-target="#question3">
+                   <h4 class="panel-title">
+                      <a class="ing">Jak nahrát studenty?</a>
+                </h4>
+              </div>
+              <div id="question3" class="panel-collapse collapse" style="height: 0px;">
+                  <div class="panel-body">
+                       <h5><span class="label label-primary">Odpověď</span></h5>
+                      <ol>
+                            <li>Připravte si soubor se studenty</li>
+                            <li>Klikněte nahoře vpravo na Administrace</li>
+                            <li>Vyberte Správa studentů</li>
+                            <li>Nyní jste na stránce se studenty. Na stránce je tabulka. Nad ní klikněte na tlačítko "Nahrát studenty"</li>
+                            <li>Po stisknutí tlačítka na vás vyskočilo okno, zde musíte najít kde se na vašem zařízení nachází soubor se studenty a nahrát ho</li>
+                            <li>Počkejte dokud nevyskočí výsledek nahrávání, pokud vyskočí červné okno, řiďte se povely v něm, protože někde nastala chyba, pokud vyskočí zelené okno vše je v pořádku a studenti byli nahrání.</li>
+                      </ol>
+                  </div>
+              </div>
+          </div>
+              <div class="panel panel-default ">
+              <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#faqAccordion" data-target="#question4">
+                   <h4 class="panel-title">
+                      <a class="ing">Jak přidat studenta?</a>
+                </h4>
+              </div>
+              <div id="question4" class="panel-collapse collapse" style="height: 0px;">
+                  <div class="panel-body">
+                       <h5><span class="label label-primary">Odpověď</span></h5>
+                      <ol>
+                         <li>Klikněte nahoře vpravo na Administrace</li>
+                          <li>Vyberte Správa studentů</li>
+                          <li>Nyní jste na stránce se studenty. Na stránce je tabulka v prvním řádku tabulky je +</li>
+                          <li>Po stisknutí + na vás vyskočilo okno zde vyplňte informace o studentovi, kterého chcete přidat</li>
+                          <li>Klikněte na tlačítko Přidat</li>
+                      </ol>
+                  </div>
+              </div>
+          </div>
+       <!-- !-->
+        <div class="panel panel-default ">
+              <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#faqAccordion" data-target="#question5">
+                   <h4 class="panel-title">
+                      <a class="ing">Jak odebrat studenta?</a>
+                </h4>
+              </div>
+              <div id="question5" class="panel-collapse collapse" style="height: 0px;">
+                  <div class="panel-body">
+                       <h5><span class="label label-primary">Odpověď</span></h5>
+                      <ol>
+                         <li>Klikněte nahoře vpravo na Administrace</li>
+                          <li>Vyberte Správa studentů</li>
+                          <li>Nyní jste na stránce se studenty. Na stránce je tabulka, v prvním řádku je pole pro vyhledávání, zde napište jméno a příjmení studenta, při psaní se bude tabulka aktulizovat</li>
+                          <li>Vedle jména a třídy studenta je červené - klikněte na něj</li>
+                          <li>Po stisknutí - na vás vyskočilo okno, zde potvrďte svou akci</li>
+                      </ol>
+                  </div>
+              </div>
+          </div>
+    </div>
+
+{% endblock %}

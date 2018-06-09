@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'votes.apps.VotesConfig',
+    'administration.apps.AdministrationConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'claro.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['claro/templates'],
+        'DIRS': ['claro/templates', 'administration/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
