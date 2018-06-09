@@ -23,6 +23,7 @@ from . import settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^votes/', include("votes.urls")),
+    url(r'^administration/', include("administration.urls")),
 ]
 # Route <BASEURL>/media to media/ directory
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Správa žáků</title>
+</head>
+<body>
+  <table style="width:100%">
+        <tr>
+          <td>+</td>
+        </tr>
+        <tr>
+          <td>Jméno žáka</td>
+          <td>Třída</td>
+          <td>Manage</td>
+          <td>Remove</td>
+        </tr>
+        {% for pupil in pupil_list %}
+            <tr>
+                <td>{{ pupil.name }}</td>
+                <td>{{ pupil.name }}</td>
+                <td>{{ pupil.name }}</td>
+            </tr>
+        {% endfor %}
+      </table>
+</body>
+</html>
