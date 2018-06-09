@@ -2,12 +2,11 @@
 Contains parser
 """
 import os
+import random
+
+from string import digits
 
 from .models import Student, Class, Pin
-import random
-NUMBERS = "0123456789"
-ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-SPECIAL = ",.-ůú)/*-+"
 
 
 class StudentDataFileParser:
@@ -35,6 +34,7 @@ class StudentDataFileParser:
 
         students = []
         classes = set()
+        pins = []
         with open(filepath, 'r') as f:
             for line in f.readlines():
                 data = line.strip().split(cls.delimeter)
@@ -51,10 +51,14 @@ class StudentDataFileParser:
                 classes.add(data[2])
                 students.append(student)
 
+        Pin.objects.bulk_create([Pin(pin=cls.generate_pin()) for _ in range(len(students))])
+        pins = Pin.objects.all()
         Class.objects.bulk_create([Class(shortname=c, classtype=c[0]) for c in classes])
         class_dict = {c.shortname: c for c in Class.objects.all()}
+
         for i in range(len(students)):
             students[i]['class_id'] = class_dict[students[i].pop('#class')]
+            students[i]['pin_id'] = pins[i]
 
         Student.objects.bulk_create([Student(**student) for student in students])
 
@@ -67,21 +71,18 @@ class StudentDataFileParser:
         Class.objects.all().delete()
         Pin.objects.all().delete()
 
-    def generate_pin(self, pin_length=32, source=NUMBERS + ALPHABET + SPECIAL):
+    @staticmethod
+    def generate_pin(pin_length=16, source=digits):
         """
             Description:
-                Method creates 50 chars long pin
+                Method that created random pin
             Params:
                 pin_length (int)- desired length of pin
                 source (String)- string of chars that pin will be created from
             Returns:
                 final (String)- created pin
         """
-        chars = []
-        for i in range(pin_length):
-            chars.append(random.choice(source))
-        final = "".join(chars)
-        return final
+        return ''.join(random.choice(source) for _ in range(pin_length))
 
     def get_data(self):
         """
