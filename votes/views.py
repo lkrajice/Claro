@@ -12,6 +12,6 @@ def index(request):
     co_je_anime = "bullshit"
     template = loader.get_template('index.html')
     context = {
-        "co_je_anime" : co_je_anime    
+        "co_je_anime" : co_je_anime
      }
     return HttpResponse(template.render(context, request))

@@ -19,5 +19,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^parlament/', include("parlament.urls")),
+    url(r'^votes/', include("votes.urls")),
 ]
