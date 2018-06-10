@@ -33,16 +33,16 @@ def election_management(request):
     if request.method == 'POST':
         election_name = request.POST.get("election_name")
         date_election_start = request.POST.get("date_election_start")
-        first_round_days = int(request.POST.get("first_round_days"))
-        second_round_days = int(request.POST.get("second_round_days"))
-        third_round_days = int(request.POST.get("third_round_days"))
+        first_round_days = int(request.POST.get("first_round_days")) - 1
+        second_round_days = int(request.POST.get("second_round_days")) - 1
+        third_round_days = int(request.POST.get("third_round_days")) - 1
 
         first_round_end = (datetime.datetime.strptime(date_election_start, "%Y-%m-%d")
                            + datetime.timedelta(days=first_round_days)).date()
         second_round_start = first_round_end + datetime.timedelta(days=1)
         second_round_end = second_round_start + datetime.timedelta(days=second_round_days)
 
-        third_round_start = second_round_start + datetime.timedelta(days=1)
+        third_round_start = second_round_end + datetime.timedelta(days=1)
         third_round_end = third_round_start + datetime.timedelta(days=third_round_days)
 
         election = model.Election(title=election_name)
