@@ -4,7 +4,7 @@ from django.template import loader
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from . import models as model
+from votes import models as model
 from .utils import StudentDataFileParser
 from claro.utils import get_context_manager
 import datetime
@@ -26,7 +26,6 @@ def index(request):
 
 def election_management(request):
     template = loader.get_template("administration_electionmanagement.html")
-
     context = {
         "election": False,
     }
@@ -56,6 +55,7 @@ def election_management(request):
             model.Round(election_id=election, type_id=types['nomination'], round_number=2, start=second_round_start, end=second_round_end),
             model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
         ])
+        #context.update({'zprava':True})
     return HttpResponse(template.render(with_metadata(context), request))
 
 
