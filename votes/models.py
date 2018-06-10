@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define db model for parlament application"""
+import datetime
+
 from django.db import models
 
 
@@ -99,6 +101,19 @@ class Round(models.Model):
 
     class Meta:
         db_table = "Round"
+
+    def compare(self, now=datetime.datetime.now().date()):
+        """
+        Compare round's start and end to current time
+
+        Returns:
+            (int): -1 if round took place, 0 if active, 1 if round will become active
+        """
+        if now < self.start:
+            return -1;
+        if self.end < now:
+            return 1;
+        return 0;
 
 
 class Candidate(models.Model):
