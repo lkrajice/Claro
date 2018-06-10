@@ -94,4 +94,3 @@ class Candidate(models.Model):
     """
     student_id = models.ForeignKey(Student, on_delete=models.CASCADE)
     round_id = models.ForeignKey(Round, on_delete=models.PROTECT)
-

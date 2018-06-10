@@ -1,25 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
-
-
 {% block title %}
 Správa voleb
 {% endblock %}
-
-
 {% block custom_css %}
 <link rel="stylesheet" href="{% static "css/style.css" %}">
 {% endblock %}
-
-
 {% block nav_right_top_list %}
 {% endblock %}
-
-
 {% block custom_sidebar_list %}
 {% endblock %}
-
-
 {% block header %}
 <h1>Vítejte na úvodní stránce<small>Version 2.0</small></h1>
 <ol class="breadcrumb">
@@ -27,8 +17,6 @@ Správa voleb
   <li class="active">Dashboard</li>
 </ol>
 {% endblock %}
-
-
 {% block content %}
 <span class="glyphicon glyphicon-plus glyphiconplus"  data-toggle="modal" data-target="#createNewElectionModal"></span>
 <!-- Modal -->
@@ -85,7 +73,7 @@ Správa voleb
   </thead>
   <tbody>
     <td>
-      <td>{{election.name}}</td>
+      <td>{{election.title}}</td>
       <td>{{election.vote_start_time}}</td>
       <td>{{election.vote_end_time}}</td>
       <td>{{election.vote_rounds}}</td>

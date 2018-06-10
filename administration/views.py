@@ -26,9 +26,9 @@ def index(request):
 
 def election_management(request):
     template = loader.get_template("administration_electionmanagement.html")
-    test = model.Election.objects.all()
+
     context = {
-        "election": [],
+        "election": False,
     }
 
     if request.method == 'POST':
@@ -51,11 +51,10 @@ def election_management(request):
 
         all_round_types = model.RoundType.objects.all()
         types = {t.name: t for t in all_round_types}
-
         model.Round.objects.bulk_create([
-            model.Round(id=election, type_id=types['nomination'], round_number=1, start=date_election_start, end=first_round_end),
-            model.Round(id=election, type_id=types['nomination'], round_number=2, start=second_round_start, end=second_round_end),
-            model.Round(id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
+            model.Round(election_id=election, type_id=types['nomination'], round_number=1, start=date_election_start, end=first_round_end),
+            model.Round(election_id=election, type_id=types['nomination'], round_number=2, start=second_round_start, end=second_round_end),
+            model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
         ])
     return HttpResponse(template.render(with_metadata(context), request))
 
