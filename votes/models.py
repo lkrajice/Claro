@@ -12,6 +12,9 @@ class Class(models.Model):
     shortname = models.CharField(max_length=10, unique=True, help_text="Abbreviation of a class")
     classtype = models.CharField(max_length=3, unique=False, help_text="Class type: V, S, I or K...")
 
+    class Meta:
+        db_table = "Class"
+
 
 class Pin(models.Model):
     """
@@ -20,6 +23,9 @@ class Pin(models.Model):
     Pins are temporary
     """
     pin = models.CharField(max_length=32, unique=False, help_text="Temporary pin for specific user")
+
+    class Meta:
+        db_table = "Pin"
 
 
 def user_image_name(instance, filename):
@@ -52,6 +58,9 @@ class Student(models.Model):
     email = models.EmailField()
     profile_image = models.FileField(upload_to=user_image_name, help_text='Profile image')
 
+    class Meta:
+        db_table = "Student"
+
 
 class Election(models.Model):
     """
@@ -61,12 +70,18 @@ class Election(models.Model):
     """
     title = models.CharField(max_length=100, help_text="Title at the main page")
 
+    class Meta:
+        db_table = "Election"
+
 
 class RoundType(models.Model):
     """
     Enumerate for vote
     """
     name = models.CharField(max_length=20, unique=True, help_text="type")
+
+    class Meta:
+        db_table = "RoundType"
 
 
 class Round(models.Model):
@@ -82,6 +97,9 @@ class Round(models.Model):
     start = models.DateField()
     end = models.DateField()
 
+    class Meta:
+        db_table = "Round"
+
 
 class Candidate(models.Model):
     """
@@ -93,6 +111,9 @@ class Candidate(models.Model):
     votes = models.PositiveSmallIntegerField(help_text="Year when election took place")
     accepted = models.BooleanField()
 
+    class Meta:
+        db_table = "Candidate"
+
 
 class Vote(models.Model):
     """
@@ -103,3 +124,6 @@ class Vote(models.Model):
     voting_id = models.ForeignKey(Round, on_delete=models.PROTECT)
     student_id = models.ForeignKey(Student, on_delete=models.CASCADE)
     vote_for = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "Vote"
