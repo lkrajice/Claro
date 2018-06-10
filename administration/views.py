@@ -27,15 +27,14 @@ def index(request):
 
 def election_management(request):
     template = loader.get_template("administration_electionmanagement.html")
-    election = ""
-    try:
-        election = model.Election.objects.order_by('end').first()
-    except IndexError:
-        election = None
-    context = {
-        election: False,
-    }
-
+    context = {}
+    print(model.Election.objects.all())
+    print(model.Round.objects.all()[0].start)
+    print(model.Round.objects.all()[0].end)
+    print(model.Round.objects.all()[1].start)
+    print(model.Round.objects.all()[1].end)
+    print(model.Round.objects.all()[2].start)
+    print(model.Round.objects.all()[2].end)
     if request.method == 'POST':
         election_name = request.POST.get("election_name")
         date_election_start = request.POST.get("date_election_start")

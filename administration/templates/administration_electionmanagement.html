@@ -78,15 +78,19 @@ Správa voleb
     </tr>
   </thead>
   <tbody>
+  {% if active_election != False%}
     <td>
       <td>{{election.title}}</td>
-      <td>{{election.vote_start_time}}</td>
-      <td>{{election.vote_end_time}}</td>
+      <td></td>
+      <td></td>
       <td>{{election.vote_rounds}}</td>
       <td><span class="glyphicon glyphicon-wrench glyphiconwrench" data-toggle="modal" data-target="#manageElectionModal"></span></td>
       <td><span class="glyphicon glyphicon-minus glyphiconminus"></span></td>
       <td></td>
       </tr>
+  {% else %}
+    <td>Aktuálně neprobíhají žádné volby, vytvořte novou kliknutím na tlačiko + nahoře</td>
+  {% endif %}
   </tbody>
 </table>
 <!-- Modal -->
