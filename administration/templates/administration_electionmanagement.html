@@ -18,6 +18,12 @@ Správa voleb
 </ol>
 {% endblock %}
 {% block content %}
+{% if created_election == True%}
+<div class="alert alert-success alert-dismissible fade in">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">X</a>
+  <strong>Výborně!</strong> Volby byly vytvořeny
+</div>
+{% endif %}
 <span class="glyphicon glyphicon-plus glyphiconplus"  data-toggle="modal" data-target="#createNewElectionModal"></span>
 <!-- Modal -->
 <div id="createNewElectionModal" class="modal fade" role="dialog">

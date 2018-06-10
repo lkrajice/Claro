@@ -56,7 +56,7 @@ def election_management(request):
             model.Round(election_id=election, type_id=types['nomination'], round_number=2, start=second_round_start, end=second_round_end),
             model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
         ])
-        #context.update({'zprava':True})
+        context.update({'created_election':True})
     return HttpResponse(template.render(with_metadata(context), request))
 
 
