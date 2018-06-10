@@ -15,8 +15,8 @@ def get_context_manager(app_specific_data):
         # get the name of function which called this one
         caller_name = outerframe[1][3]
         # get the name of function which called this one
-        caller_app = outerframe[1][1].split('/')[-2]
 
+        caller_app = outerframe[1][1].replace("\\", "/").split('/')[-2]
         context.update(app_specific_data)
         context['metadata_active_view'] = caller_name
         context['metadata_active_app'] = caller_app
