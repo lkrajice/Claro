@@ -66,6 +66,32 @@
           <ul class="sidebar-menu" data-widget="tree">
             <li class="header">HLAVNÍ NAVIGACE</li>
 
+            {# Start - Administration app list #}
+            <li class="treeview {% if metadata_active_app == "administration" %}active{% endif %}">
+              <a href="#">
+                <i class="fa fa-group"></i> <span>Administrace</span>
+              </a>
+              {# Votes app list - submenu #}
+              <ul class="treeview-menu">
+                <li {% if metadata_active_view == "election_management" %}class="active"{% endif %}>
+                  <a href="/administration/electionmanagement">
+                    <i class="fa fa-circle-o"></i> Správa voleb
+                  </a>
+                </li>
+                <li {% if metadata_active_view == "pupil_management" %}class="active"{% endif %}>
+                  <a href="/administration/pupilmanagement">
+                    <i class="fa fa-circle-o"></i> Správa studentů
+                  </a>
+                </li>
+                <li {% if metadata_active_view == "index" %}class="active"{% endif %}>
+                  <a href="/administration/index">
+                    <i class="fa fa-circle-o"></i> Pomoc
+                  </a>
+                </li>
+              </ul>
+            </li>
+            {# End - Administration app list #}
+
             {# Start - Votes app list #}
             {% if active_app == "votes" %}
             <li class="treeview active">
@@ -82,10 +108,6 @@
               </ul>
             </li>
             {# End - Votes app list #}
-
-            {# Start - Administration app list #}
-            {# ... #}
-            {# End - Administration app list #}
           </ul>
 
           {% block custom_sidebar_list %}

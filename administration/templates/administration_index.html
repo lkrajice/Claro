@@ -1,39 +1,35 @@
 {% extends "base.html" %}
 {% load static %}
+
+
+{% block title %}
+Hlavni stranka administrace
+{% endblock %}
+
+
+{% block custom_css %}
+{% endblock %}
+
+
+{% block nav_right_top_list %}
+{% endblock %}
+
+
+{% block custom_sidebar_list %}
+{% endblock %}
+
+
+{% block header %}
+<h1>Vítejte na úvodní stránce<small>Version 2.0</small></h1>
+<ol class="breadcrumb">
+  <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+  <li class="active">Dashboard</li>
+</ol>
+{% endblock %}
+
+
 {% block content %}
-      {# Start of sidebar #}
-      <aside class="main-sidebar">
-        {# Here are defined lists and items in the sidebar #}
-        <section class="sidebar">
-          {# Main navigation #}
-          <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">HLAVNÍ NAVIGACE</li>
-            {# Start - Votes app list #}
-            <li class="treeview active">
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-group"></i> <span>Administrace</span>
-              </a>
-              {# Votes app list - submenu #}
-              <ul class="treeview-menu">
-                <li><a href="electionmanagement"><i class="fa fa-circle-o"></i> Správa voleb</a></li>
-                <li class="active"><a href="pupilmanagement"><i class="fa fa-circle-o"></i>Správa studentů</a></li>
-              </ul>
-            </li>
-            {# End - Votes app list #}
-
-            {# Start - Administration app list #}
-            {# ... #}
-            {# End - Administration app list #}
-          </ul>
-
-          {% block custom_sidebar_list %}
-          {% endblock %}
-
-        </section>
-      </aside>
-      {# End of sidebar #}
-    <h1>Vítejte na úvodní stránce</h1>
+    <h1></h1>
     <div class="panel-group" id="faqAccordion">
           <div class="panel panel-default ">
               <div class="panel-heading accordion-toggle question-toggle collapsed" data-toggle="collapse" data-parent="#faqAccordion" data-target="#question0">

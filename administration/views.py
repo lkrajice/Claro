@@ -7,6 +7,11 @@ from django.conf import settings
 
 from .utils import StudentDataFileParser
 
+from claro.utils import get_context_manager
+
+BASE_CONTEXT = {}
+with_metadata = get_context_manager(BASE_CONTEXT)
+
 
 def index(request):
     """
@@ -16,7 +21,7 @@ def index(request):
     """
     template = loader.get_template("administration_index.html")
     context = {}
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render(with_metadata(context), request))
 
 
 def election_management(request):
@@ -24,7 +29,7 @@ def election_management(request):
     context = {
         "election": False
     }
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render(with_metadata(context), request))
 
 
 def pupil_management(request):
@@ -42,4 +47,4 @@ def pupil_management(request):
 
         StudentDataFileParser.proccess_file(filepath)
 
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render(with_metadata(context), request))
