@@ -7,18 +7,50 @@ from django.template import loader
 
 from claro.utils import get_context_manager
 
-BASE_CONTEXT = {}
-with_metadata = get_context_manager(BASE_CONTEXT)
+from .models import Class, Student, Election, Round, Vote
 
+
+with_metadata = get_context_manager()
+
+
+def get_sidebar_class_context():
+    classes = {}
+    for cls in Class.objects.all():
+        if cls.classtype not in classes:
+            classes[cls.classtype] = {}
+
+        grade = cls.shortname[1]
+        if grade not in classes[cls.classtype]:
+            classes[cls.classtype][grade] = []
+        classes[cls.classtype][grade].append(cls.shortname)
+
+    return {'classes': classes}
+
+
+### VIEWS #########################################################################################
 
 def overview(request):
     """
     Shown nomination or election overview based on which procces is active
+
+    PROCCESS:
+        Get latest election
+        IF no election exists
+            notify the user
+
+        Get currently active round of election
+        IF no active round
+            get latest row and present it's results
+        ELIF active round exists
+            run nomination_overview or election_overview depending on round type
     """
-    return nomination_overview(request)
+    try:
+        election = Election.objects.latest('id')
+    except Election.DoesNotExist:
+        pass
+    else:
+        return nomination_overview(request)
 
-
-### VIEWS #########################################################################################
 
 def nomination_overview(request):
     """
@@ -89,18 +121,4 @@ def class_overview(request):
 
     """
     template = loader.get_template('class_overview.html')
-    context = {
-        'classes': {
-            'V*': {
-                '2': ['V2A', 'V2B', 'V2C', 'V2D'],
-                '3': ['V3A', 'V3B', 'V3C', 'V3D'],
-                '4': ['V4A', 'V4B', 'V4C', 'V4D'],
-            },
-            'S*': {
-                '2': ['S2A', 'S2B', 'S2C'],
-                '3': ['S3A', 'S3B', 'S3C'],
-                '4': ['S4A', 'S4B', 'S4C'],
-            },
-        },
-    }
-    return HttpResponse(template.render(with_metadata(context), request))
+    return HttpResponse(template.render(with_metadata({}), request))

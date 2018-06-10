@@ -6,7 +6,7 @@ import random
 
 from string import digits
 
-from .models import Student, Class, Pin, RoundType
+from votes.models import Student, Class, Pin, RoundType
 
 
 class StudentDataFileParser:
@@ -52,7 +52,7 @@ class StudentDataFileParser:
 
         Pin.objects.bulk_create([Pin(pin=cls.generate_pin()) for _ in range(len(students))])
         pins = Pin.objects.all()
-        Class.objects.bulk_create([Class(shortname=c, classtype=c[0]) for c in classes])
+        Class.objects.bulk_create([Class(shortname=c, classtype=c[0]+'*') for c in classes])
         class_dict = {c.shortname: c for c in Class.objects.all()}
 
         for i in range(len(students)):

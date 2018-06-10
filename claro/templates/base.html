@@ -100,7 +100,11 @@
               </a>
               {# Votes app list - submenu #}
               <ul class="treeview-menu">
-                <li {% if metadata_active_view == "overview" %}class="active" {% endif %}>
+                {% if metadata_active_view == "election_overview" or metadata_active_view == "nomination_overview" %}
+                <li class="active">
+                {% else %}
+                <li>
+                {% endif %}
                   <a href="/votes/overview">
                     <i class="fa fa-circle-o"></i> Přehled aktuálnich voleb
                   </a>
