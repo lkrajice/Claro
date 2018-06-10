@@ -30,31 +30,40 @@ def election_management(request):
         "election": False,
     }
 
+    # e = Election.objects.latest()
+    # print(e.title)
+
+
     if request.method == 'POST':
-        election_name = request.POST.get("election_name")
-        date_election_start = request.POST.get("date_election_start")
-        first_round_days = int(request.POST.get("first_round_days"))
-        second_round_days = int(request.POST.get("second_round_days"))
-        third_round_days = int(request.POST.get("third_round_days"))
-
-        first_round_end = (datetime.datetime.strptime(date_election_start, "%Y-%m-%d")
-                           + datetime.timedelta(days=first_round_days)).date()
-        second_round_start = first_round_end + datetime.timedelta(days=1)
-        second_round_end = second_round_start + datetime.timedelta(days=second_round_days)
-
-        third_round_start = second_round_start + datetime.timedelta(days=1)
-        third_round_end = third_round_start + datetime.timedelta(days=third_round_days)
-
-        election = model.Election(title=election_name)
+        # Election
+        election = model.Election(title=request.POST.get("election_name"))
         election.save()
 
+        # RoundTypes
         all_round_types = model.RoundType.objects.all()
         types = {t.name: t for t in all_round_types}
-        model.Round.objects.bulk_create([
-            model.Round(election_id=election, type_id=types['nomination'], round_number=1, start=date_election_start, end=first_round_end),
-            model.Round(election_id=election, type_id=types['nomination'], round_number=2, start=second_round_start, end=second_round_end),
-            model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
-        ])
+
+        # Round
+        start = datetime.datetime.strptime(request.POST.get("date_election_start"), "%Y-%m-%d")
+        round1_delta = datetime.timedelta(days=int(request.POST.get("first_round_days")))
+        round2_delta = datetime.timedelta(days=int(request.POST.get("second_round_days")))
+        round3_delta = datetime.timedelta(days=int(request.POST.get("third_round_days")))
+
+        round1_end_date = (start + round1_delta).date()
+        round2_end_date = (start + round1_delta + round2_delta).date()
+        round3_end_date = (start + round1_delta + round2_delta + round3_delta).date()
+        round_ends = [round1_end_date, round2_end_date, round3_end_date]
+
+        round_list = []
+        for index, r in enumerate(round_ends):
+            round_type = types['nomination'] if index < 2 else types['election']
+            round_list.append(model.Round(election_id=election,
+                                          type_id=round_type,
+                                          round_number=index+1,
+                                          start=round_ends[index],
+                                          end=round_ends[index]))
+
+        model.Round.objects.bulk_create(round_list)
         #context.update({'zprava':True})
     return HttpResponse(template.render(with_metadata(context), request))
 
