@@ -1,43 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import inspect
-
 from django.shortcuts import render
 from django.http import HttpResponse
-
 from django.template import loader
 
+from claro.utils import get_context_manager
 
-DEFAULT_CONTEXT = {'metadata_active_app': 'votes'}
-
-
-def get_default_context():
-    """
-    Return default context
-    """
-    currentframe = inspect.currentframe()
-    outerframe = inspect.getouterframes(currentframe, 1)
-
-    # get the name of function which called this one
-    caller_name = outerframe[1][3]
-
-    context = DEFAULT_CONTEXT
-    context['metadata_active_view'] = caller_name
-
-    return context
+BASE_CONTEXT = {}
+with_metadata = get_context_manager(BASE_CONTEXT)
 
 
 def overview(request):
     """
     Shown nomination or election overview based on which procces is active
     """
-    return nomination_overview(request, get_default_context())
+    return nomination_overview(request)
 
 
 ### VIEWS #########################################################################################
 
-def nomination_overview(request, default_context):
+def nomination_overview(request):
     """
     Shows nominated students for every class
 
@@ -58,11 +41,10 @@ def nomination_overview(request, default_context):
     context = {
         'key': 'value'
     }
-    context.update(default_context)
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render(with_metadata(context), request))
 
 
-def election_overview(request, default_context):
+def election_overview(request):
     """
     Shows candidates and progress of election
 
@@ -84,8 +66,7 @@ def election_overview(request, default_context):
     context = {
         'key': 'value'
     }
-    context.update(default_context)
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render(with_metadata(context), request))
 
 
 def class_overview(request):
@@ -122,5 +103,4 @@ def class_overview(request):
             },
         },
     }
-    context.update(get_default_context())
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render(with_metadata(context), request))
