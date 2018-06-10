@@ -92,8 +92,33 @@
             </li>
             {# End - Administration app list #}
 
-            {# Start - Votes app list #}
+            {# Start - Home app list #}
+            <li class="treeview {% if metadata_active_app == "home" %}active{% endif %}">
+              <a href="#">
+                <i class="fa fa-group"></i> <span>Home</span>
+              </a>
+              {# Home app list - submenu #}
+              <ul class="treeview-menu">
+                <li {% if metadata_active_view == "home_welcome" %}class="active"{% endif %}>
+                  <a href="/home/welcome">
+                    <i class="fa fa-circle-o"></i> Úvodní stránka
+                  </a>
+                </li>
+                <li {% if metadata_active_view == "home_about" %}class="active"{% endif %}>
+                  <a href="/home/about">
+                    <i class="fa fa-circle-o"></i> O stránce
+                  </a>
+                </li>
+                <li {% if metadata_active_view == "home_help" %}class="active"{% endif %}>
+                  <a href="/home/help">
+                    <i class="fa fa-circle-o"></i> Pomoc
+                  </a>
+                </li>
+              </ul>
+            </li>
+            {# End - Home app list #}
 
+            {# Start - Votes app list #}
             <li class="treeview {% if metadata_active_app == "votes" %}active{% endif %}">
               <a href="#">
                 <i class="fa fa-group"></i> <span>Volby</span>
