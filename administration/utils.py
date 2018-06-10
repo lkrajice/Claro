@@ -6,13 +6,12 @@ import random
 
 from string import digits
 
-from .models import Student, Class, Pin
+from .models import Student, Class, Pin, RoundType
 
 
 class StudentDataFileParser:
     """
-        StudentDataFilePArser
-        This class parses data file which is gettable by method get_data
+        Parse students, wipe database and start election
 
         Params:
             file_path (String)- path to file
@@ -61,6 +60,12 @@ class StudentDataFileParser:
             students[i]['pin_id'] = pins[i]
 
         Student.objects.bulk_create([Student(**student) for student in students])
+
+        # init RoundType
+        types = RoundType.objects.all()
+        if len(types) == 0:
+            RoundType.objects.bulk_create(
+                [RoundType(name='nomination'), RoundType(name='election')])
 
     @staticmethod
     def wipedb():
