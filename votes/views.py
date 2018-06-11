@@ -46,13 +46,20 @@ def overview(request):
     """
     try:
         election = Election.objects.latest('id')
+        rounds = Round.objects.all().filter(election_id=election)
+        active = [r for r in rounds if r.compare == 0]
+        if len(active) != 0:
+            if active[0].type_id.name == 'nomination':
+                nomination_overview(request, election, active[0])
+            else:
+                election_overview(request, election, active[0])
     except Election.DoesNotExist:
         pass
-    else:
-        return nomination_overview(request)
+    template = loader.get_template('no_active_row.html')
+    return HttpResponse(template.render(with_metadata({}), request))
 
 
-def nomination_overview(request):
+def nomination_overview(request, election, active_round):
     """
     Shows nominated students for every class
 
@@ -70,13 +77,14 @@ def nomination_overview(request):
 
     """
     template = loader.get_template('nomination_overview.html')
+
     context = {
         'key': 'value'
     }
     return HttpResponse(template.render(with_metadata(context), request))
 
 
-def election_overview(request):
+def election_overview(request, election, active_round):
     """
     Shows candidates and progress of election
 
@@ -121,4 +129,4 @@ def class_overview(request):
 
     """
     template = loader.get_template('class_overview.html')
-    return HttpResponse(template.render(with_metadata({}), request))
+    return HttpResponse(template.render(with_metadata(get_sidebar_class_context()), request))
