@@ -67,11 +67,11 @@ def election_management(request):
 
 def pupil_management(request):
     template = loader.get_template("administration_pupilmanagement.html")
-    stunman = model.Student.objects.all()
+    students = model.Student.objects.all()
 
     context = {
         "election": False,
-        "stuman": stunman
+        "students": students
 
     }
     """
