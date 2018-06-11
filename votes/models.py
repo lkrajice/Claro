@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Define db model for parlament application"""
 import datetime
+import math
 
 from django.db import models
 
@@ -102,18 +103,38 @@ class Round(models.Model):
     class Meta:
         db_table = "Round"
 
-    def compare(self, now=datetime.datetime.now().date()):
+    @property
+    def compare(self):
         """
         Compare round's start and end to current time
 
         Returns:
             (int): -1 if round took place, 0 if active, 1 if round will become active
         """
+        now = datetime.datetime.now().date()
         if now < self.start:
-            return -1;
-        if self.end < now:
+            print(now, self.start)
             return 1;
+        if self.end < now:
+            return -1;
         return 0;
+
+    @property
+    def percent(self):
+        """
+        Return progress towards end of the round
+        """
+        now = datetime.datetime.now()
+        start_in_datetime = datetime.datetime.combine(self.start, datetime.datetime.min.time())
+        from_start = (now - start_in_datetime).total_seconds()
+        start_to_end = (self.end - self.start).total_seconds()
+
+        if from_start < 0:
+            return 0
+        if start_to_end == 0:
+            start_to_end = 24 * 60 * 60
+
+        return min(100, int(from_start // (start_to_end / 100)))
 
 
 class Candidate(models.Model):

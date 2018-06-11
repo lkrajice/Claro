@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Vítejte na volebním systému
+{% endblock %}
+
+
+{% block custom_css %}
+{% endblock %}
+
+
+{% block nav_right_top_list %}
+<li class="messages-menu">
+  <a href="#">
+    <strong>Volby končí za x dní</strong>
+  </a>
+</li>
+{% endblock %}
+
+{% block custom_sidebar_list %}
+{% endblock %}
+
+
+{% block header %}
+<h1>Vítejte na volebním systému</h1>
+<ol class="breadcrumb">
+  <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+  <li class="active">Welcome</li>
+</ol>
+{% endblock %}
+
+
+{% block content %}
+{% if election is None %}
+  <h2>Momentálně v systému nejsou žádné záznamy voleb</h2>
+{% else %}
+  {% if election_state == -1 %}
+  <h2>Naposled v systému probíhaly volby: <strong>{{ election.title }}</strong></h2>
+  {% elif election_state == 0 %}
+  <h2>Momentálně v systému probíhají volby: <strong>{{ election.title }}</strong></h2>
+  {% else %}
+  <h2>V systému jsou naplánovány volby: <strong>{{ election.title }}</strong></h2>
+  {% endif %}
+  <div class="box">
+    <div class="box-header">
+      <h3 class="box-title">{{ election.title }}</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body no-padding">
+      <table class="table table-striped">
+        <tbody>
+            <th style="width: 10px">#</th>
+            <th style="width: 150px">Začíná v den</th>
+            <th style="width: 150px">Končí dne</th>
+            <th>Průběh kola</th>
+            <th style="width: 40px">Procent</th>
+          </tr>
+          {% for round in rounds %}
+          <tr>
+            <td>{{ round.round_number }}.</td>
+            <td>{{ round.start|date:"d, m. Y" }}</td>
+            <td>{{ round.end|date:"d, m. Y" }}</td>
+            {% if round.compare == -1 %}
+            <td>
+              <div class="progress progress-xs">
+                <div class="progress-bar progress-bar-success" style="width: 100%"></div>
+              </div>
+            </td>
+            <td><span class="badge bg-green">100%</span></td>
+            {% else %}
+            <td>
+              <div class="progress progress-xs progress-striped active">
+                <div class="progress-bar progress-bar-primary" style="width: {{ round.percent }}%"></div>
+              </div>
+            </td>
+            <td><span class="badge bg-blue">{{ round.percent }}%</span></td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
+  </div>
+{% endif %}
+{% endblock %}
