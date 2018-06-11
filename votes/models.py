@@ -164,3 +164,59 @@ class Vote(models.Model):
 
     class Meta:
         db_table = "Vote"
+
+
+class ElectionController:
+
+    def __init__(self):
+        self.is_active_election = self.is_active_election()
+        self.all_election_active_rounds = [Round.objects.all()[0], Round.objects.all()[1], Round.objects.all()[2]]
+        self.first_round = Round.objects.all()[0]
+        self.second_round = Round.objects.all()[1]
+        self.third_round = Round.objects.all()[2]
+        self.all_active_rounds = self.fill_all_active_rounds()
+        self.active_election = self.fill_active_election()
+        self.active_round = self.fill_active_round()
+        self.active_round_number = self.fill_round_number()
+        self.all_rounds = Round.objects.all()
+        self.all_non_active_rounds = self.fill_all_not_active_rounds()
+
+    def is_active_election(self):
+        today = datetime.datetime.now().strftime("%Y-%m-%d")
+        res = 0
+        r = [Round.objects.all()[0], Round.objects.all()[1], Round.objects.all()[2]]
+        for round in r:
+            if round.end.strftime("%Y-%m-%d") < today:
+                res +=1
+        if res == 3:
+            print("NN")
+            return False
+        print("YY")
+        return True
+
+    def fill_all_active_rounds(self):
+        newlist = []
+        list = self.all_election_active_rounds
+        today = datetime.datetime.now().strftime("%Y-%m-%d")
+        for round in list:
+            if round.start.strftime("%Y-%m-%d") <= today and round.end.strftime("%Y-%m-%d") >= today:
+               newlist.append(round)
+        return newlist
+
+    def fill_active_election(self):
+        return self.all_active_rounds[0].election_id
+
+    def fill_active_round(self):
+        return self.all_active_rounds[0]
+
+    def fill_round_number(self):
+        return self.all_active_rounds[0].round_number
+
+    def fill_all_not_active_rounds(self):
+        list = []
+        for round in self.all_rounds:
+            list.append(round)
+        del list[0]
+        del list[1]
+        del list[2]
+        return list

@@ -1,27 +1,22 @@
 {% extends "base.html" %}
 {% load static %}
-
-
 {% block title %}
 Správa studentů
 {% endblock %}
-
-
 {% block custom_css %}
-<link rel="stylesheet" href="{% static "css/style.css" %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock %}
+{%block app_specific_js %}
+  <script type="text/javascript" src="{% static 'js/administration.js' %}"></script>
+{% endblock %}
+
 
 
 {% block nav_right_top_list %}
 {% endblock %}
-
-
 {% block custom_sidebar_list %}
 {% endblock %}
-
-
 {% block header %}
-<h1>Vítejte na úvodní stránce<small>Version 2.0</small></h1>
 <ol class="breadcrumb">
   <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
   <li class="active">Dashboard</li>
@@ -30,6 +25,7 @@ Správa studentů
 
 {% block content %}
 {# End of sidebar #}
+<!-- Election check if there are election do not allow to load new data !-->
 {% if election == False %}
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
@@ -42,12 +38,21 @@ Správa studentů
     <strong>Upozornění!</strong> Není možné nahrávat nové studenty pokud probíhají volby
   </div>
 {% endif %}
-<div class="row">
-  <div class="col-sm-6"><span class="glyphicon glyphicon-plus glyphiconplus" data-toggle="modal" data-target="#createNewElectionModal"></span></div>
-  <div class="col-sm-6"><input type="text" class="searchInput" placeholder="Vyhledávání"></div>
-</div>
 
-<!-- Modal -->
+
+
+<input type="text" class="live-search-box" placeholder="search here" />
+
+<ul class="live-search-list">
+  {% for student in stuman %}
+    <li>{{student.name}}</li>
+    <li>{{student.class_id.shortname}}</li>
+  {% endfor%}
+</ul>
+
+
+<!-- MODALS-->
+<!-- Create new student modal !-->
 <div id="createNewElectionModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <!-- Modal content-->
@@ -75,26 +80,7 @@ Správa studentů
     </div>
   </div>
 </div>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Jméno studenta</th>
-        <th>Třída</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>{{election.name}}</td>
-        <td>{{election.vote_start_time}}</td>
-        <td>{{election.vote_end_time}}</td>
-        <td>{{election.vote_rounds}}</td>
-        <td><span class="glyphicon glyphicon-wrench glyphiconwrench" data-toggle="modal" data-target="#manageElectionModal"></span></td>
-        <td><span class="glyphicon glyphicon-minus glyphiconminus"></span></td>
-      </tr>
-    </tbody>
-  </table>
-
-<!-- Modal -->
+<!-- Manage student modal !-->
 <div id="manageElectionModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <!-- Modal content-->

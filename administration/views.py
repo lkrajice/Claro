@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-
 from django.template import loader
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
@@ -13,13 +12,7 @@ import datetime
 BASE_CONTEXT = {}
 with_metadata = get_context_manager(BASE_CONTEXT)
 
-
 def index(request):
-    """
-        SHOWS
-        ACTIONS co muze udelat
-        PROCCESS co delat metoda
-    """
     template = loader.get_template("administration_index.html")
     context = {}
     return HttpResponse(template.render(with_metadata(context), request))
@@ -27,14 +20,22 @@ def index(request):
 
 def election_management(request):
     template = loader.get_template("administration_electionmanagement.html")
-    context = {}
-    print(model.Election.objects.all())
-    print(model.Round.objects.all()[0].start)
-    print(model.Round.objects.all()[0].end)
-    print(model.Round.objects.all()[1].start)
-    print(model.Round.objects.all()[1].end)
-    print(model.Round.objects.all()[2].start)
-    print(model.Round.objects.all()[2].end)
+    elections = model.Election.objects.all()
+    rounds = model.Round.objects.all()
+    today = datetime.datetime.today().strftime('%Y-%m-%d')
+
+    el = model.ElectionController()
+    context = {
+        "today": today,
+        "elcont" : el,
+    }
+
+
+    """
+        Create new election
+        --------------------
+        This script will take all data from POST and creates correct times for election rounds and add record to database
+    """
     if request.method == 'POST':
         election_name = request.POST.get("election_name")
         date_election_start = request.POST.get("date_election_start")
@@ -66,20 +67,23 @@ def election_management(request):
 
 def pupil_management(request):
     template = loader.get_template("administration_pupilmanagement.html")
-    context = {
-        "election": False
-    }
+    stunman = model.Student.objects.all()
 
-    # proccess uploaded file
+    context = {
+        "election": False,
+        "stuman": stunman
+
+    }
+    """
+        Upload new file
+        ------------------------
+        This script takes file from computer, loads it into server and parse it
+    """
     if request.method == 'POST' and request.FILES['myfile']:
         myfile = request.FILES['myfile']
         fs = FileSystemStorage()
         fs.save(myfile.name, myfile)
         filepath = os.path.join(settings.MEDIA_ROOT, myfile.name)
-
         StudentDataFileParser.proccess_file(filepath)
-
-
-
 
     return HttpResponse(template.render(with_metadata(context), request))

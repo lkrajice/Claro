@@ -4,28 +4,83 @@
 Správa voleb
 {% endblock %}
 {% block custom_css %}
-<link rel="stylesheet" href="{% static "css/style.css" %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+{%block app_specific_js %}
+  <script type="text/javascript" src="{% static 'js/administration.js' %}"></script>
 {% endblock %}
 {% block nav_right_top_list %}
 {% endblock %}
 {% block custom_sidebar_list %}
 {% endblock %}
 {% block header %}
-<h1>Vítejte na úvodní stránce<small>Version 2.0</small></h1>
 <ol class="breadcrumb">
   <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
   <li class="active">Dashboard</li>
 </ol>
 {% endblock %}
 {% block content %}
+<!-- Creation of election success!-->
 {% if created_election == True%}
 <div class="alert alert-success alert-dismissible fade in">
   <a href="#" class="close" data-dismiss="alert" aria-label="close">X</a>
   <strong>Výborně!</strong> Volby byly vytvořeny
 </div>
 {% endif %}
+<!-- Create new election !-->
 <span class="glyphicon glyphicon-plus glyphiconplus"  data-toggle="modal" data-target="#createNewElectionModal"></span>
-<!-- Modal -->
+<!-- Active election !-->
+<table class="table">
+  <caption>Aktuální volby</caption>
+  <thead>
+    <tr>
+      <th>Název volby</th>
+      <th>Začátek kola</th>
+      <th>Konec kola</th>
+      <th>Aktuální kolo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      {% if elcont.is_active_election%}
+      <td>{{elcont.active_election.title}}</td>
+      <td>{{elcont.active_round.start}}</td>
+      <td>{{elcont.active_round.end}}</td>
+      <td>{{elcont.active_round_number}}</td>
+      <td><span class="glyphicon glyphicon-wrench glyphiconwrench" data-toggle="modal" data-target="#manageElectionModal"></span></td>
+      <td><span class="glyphicon glyphicon-minus glyphiconminus"></span></td>
+    {% else %}
+      <td>Aktuálně neprobíhají žádné volby</td>
+    {% endif%}
+    </tr>
+
+  </tbody>
+</table>
+<!-- History of elections !-->
+<table class="table">
+  <caption>Historie voleb</caption>
+  <thead>
+    <tr>
+      <th>Název volby</th>
+      <th>Začátek kola</th>
+      <th>Konec kola</th>
+      <th>Aktuální kolo</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for round in elcont.all_non_active_rounds %}
+        <tr>
+          <td>{{round.election_id.title}}</td>
+          <td>{{round.start}}</td>
+          <td>{{round.end}}</td>
+          <td>{{round.round_number}}</td>
+        </tr>
+      {% endfor%}
+  </tbody>
+</table>
+
+<!-- MODALS !-->
+<!-- Create new eleciton modal !-->
 <div id="createNewElectionModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <!-- Modal content-->
@@ -43,19 +98,19 @@ Správa voleb
           </div>
           <div class="form-group">
             <label for="election_start">Začátek voleb:</label>
-            <input type="date" name="date_election_start" class="form-control" id="election_start" required/>
+            <input type="date" name="date_election_start" class="form-control" id="election_start" required min="{{today}}"/>
           </div>
           <div class="form-group">
             <label for="election_round_end">Trvání prvního kola:</label>
-            <input type="text" name="first_round_days"class="form-control" id="election_round_end" placeholder="Zadejte počet dní"required/>
+            <input type="number" name="first_round_days"class="form-control" id="election_round_end" placeholder="Zadejte počet dní" min="1" required/>
           </div>
           <div class="form-group">
             <label for="election_second_round_end">Trvání druhého kola:</label>
-            <input type="text" name="second_round_days"class="form-control" id="election_second_round_end" placeholder="Zadejte počet dní"required/>
+            <input type="number" name="second_round_days"class="form-control" id="election_second_round_end" placeholder="Zadejte počet dní" min="1" required/>
           </div>
           <div class="form-group">
             <label for="election_third_round_end">Trvání třetího kola (pokud na něj dojde):</label>
-            <input type="text" name="third_round_days" class="form-control" id="election_third_round_end" placeholder="Zadejte počet dní"required/>
+            <input type="number" name="third_round_days" class="form-control" id="election_third_round_end" placeholder="Zadejte počet dní" min="1" required/>
           </div>
           <input type="submit" class="btn btn-default" value="Založit nové volby"/>
         </form>
@@ -64,36 +119,9 @@ Správa voleb
         <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
       </div>
     </div>
-
   </div>
 </div>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Název volby</th>
-      <th>Začátek voleb</th>
-      <th>Konec voleb</th>
-      <th>Aktuální kolo</th>
-      <th>Fáze volby</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% if active_election != False%}
-    <td>
-      <td>{{election.title}}</td>
-      <td></td>
-      <td></td>
-      <td>{{election.vote_rounds}}</td>
-      <td><span class="glyphicon glyphicon-wrench glyphiconwrench" data-toggle="modal" data-target="#manageElectionModal"></span></td>
-      <td><span class="glyphicon glyphicon-minus glyphiconminus"></span></td>
-      <td></td>
-      </tr>
-  {% else %}
-    <td>Aktuálně neprobíhají žádné volby, vytvořte novou kliknutím na tlačiko + nahoře</td>
-  {% endif %}
-  </tbody>
-</table>
-<!-- Modal -->
+<!--Manage Election modal -->
 <div id="manageElectionModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <!-- Modal content-->
@@ -104,25 +132,36 @@ Správa voleb
       </div>
       <div class="modal-body">
         <form method="POST">
-          <div class="form-group">
-            <label for="election_name_new">Název voleb:</label>
-            <input type="text" class="form-control" id="election_name_new" required/>
-          </div>
-          <!-- if 1 >= 1!-->
-          <div class="form-group">
-            <label for="election_end_round_new">Konec prvního kola:</label>
-            <input type="text" class="form-control" id="election_end_round_new" placeholder="Zadejte počet dní" required/>
-          </div>
+          {%if elcont.active_round_number == 1%}
           <!-- if 1 >= 2!-->
           <div class="form-group">
+            <label for="election_name_new">Název voleb:</label>
+            <input type="text" class="form-control" id="election_name_new" value="{{elcont.active_election.title}}" required/>
+          </div>
+          <div class="form-group">
             <label for="election_end_firstround_new">Konec druhého kola:</label>
-            <input type="text" class="form-control" id="election_end_firstround_new" placeholder="Zadejte počet dní" required/>
+            <input type="date" class="form-control" id="election_end_firstround_new" required min="{{today}}" value="{{elcont.second_round.convert_end_time}}" required/>
           </div>
           <!-- if 1 == 3 and end != 1!-->
           <div class="form-group">
             <label for="election_end_secondround_new">Konec třetího kola:</label>
-            <input type="text" class="form-control" id="election_end_secondround_new" placeholder="Zadejte počet dní" required/>
+            <input type="date" class="form-control" id="election_end_secondround_new" required min="{{today}}" value="{{elcont.third_round.convert_end_time}}" required/>
           </div>
+          {%elif elcont.active_round_number == 2%}
+          <div class="form-group">
+            <label for="election_name_new">Název voleb:</label>
+            <input type="text" class="form-control" id="election_name_new" value="{{elcont.active_election.title}}"required/>
+          </div>
+          <div class="form-group">
+            <label for="election_end_secondround_new">Konec třetího kola:</label>
+            <input type="text" class="form-control" id="election_end_secondround_new" required min="{{today}}" value="{{elcont.third_round.convert_end_time}}" required/>
+        </div>
+          {%else%}
+          <div class="form-group">
+            <label for="election_name_new">Název voleb:</label>
+            <input type="text" class="form-control" id="election_name_new"  value="{{elcont.active_election.title}}" required/>
+          </div>
+          {%endif%}
           <input type="submit" class="btn btn-default" value="Uložit změny"/>
         </form>
       </div>
