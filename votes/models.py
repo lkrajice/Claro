@@ -167,7 +167,7 @@ class Vote(models.Model):
 
 
 class ElectionController:
-
+    #REWORK this class
     def __init__(self):
         self.is_active_election = self.is_active_election()
         self.all_election_active_rounds = [Round.objects.all()[0], Round.objects.all()[1], Round.objects.all()[2]]

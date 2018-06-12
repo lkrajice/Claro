@@ -17,11 +17,12 @@ def index(request):
     context = {}
     return HttpResponse(template.render(with_metadata(context), request))
 
-
 def election_management(request):
+    """
+        SHOWS
+            App where you can manage elections and see their history
+    """
     template = loader.get_template("administration_electionmanagement.html")
-    elections = model.Election.objects.all()
-    rounds = model.Round.objects.all()
     today = datetime.datetime.today().strftime('%Y-%m-%d')
 
     el = model.ElectionController()
@@ -29,7 +30,6 @@ def election_management(request):
         "today": today,
         "elcont" : el,
     }
-
 
     """
         Create new election
@@ -66,13 +66,16 @@ def election_management(request):
 
 
 def pupil_management(request):
+    """
+        SHOWS
+            App where you can manage students that can vote
+    """
+
     template = loader.get_template("administration_pupilmanagement.html")
     students = model.Student.objects.all()
-
     context = {
         "election": False,
         "students": students
-
     }
     """
         Upload new file
