@@ -66,5 +66,29 @@ margin : 5px 0;
 .class-link:hover {
     background-color: #f6f6f6;
 }
-.class-link {
+
+.card {
+    width: 26rem;
+    margin: auto;
+    margin-bottom: 20px;
+    border: 1px solid #aaa;
+    box-shadow: 5px 5px 5px #888;
+    border-radius: 10px;
+}
+.card:hover {
+    box-shadow: 10px 10px 5px #888;
+    background-color: #fff;
+}
+.card-img-top {
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    border-bottom: 2px solid black;
+}
+.card-body {
+    padding: 10px;
+}
+
+.card-title {
+    margin: 0 0 30px 0;
+    font-weight: bold;
 }

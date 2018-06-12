@@ -72,26 +72,45 @@ Welcome on the site!
 
 
 {% block content %}
-<h3>Vyberte si třídu ze seznamu</h3>
+  {% if class_name is None %}
+    <h3>Vyberte si třídu ze seznamu</h3>
 
-{% for letter, grades in classes.items %}
-  {% for grade, classes in grades.items %}
-  <div class="row">
-    <div class="col-md-12 col-sm-12 col-xs-12">
-      <div class="info-box">
-        <span class="info-box-icon bg-maroon" style="padding: 5px 0 0 7px">
-          {{ letter|cut:"*" }}{{ grade }}*
-        </span>
+    {% for letter, grades in classes.items %}
+      {% for grade, classes in grades.items %}
+      <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-maroon" style="padding: 5px 0 0 7px">
+              {{ letter|cut:"*" }}{{ grade }}*
+            </span>
 
-        <div class="info-box-content class-link-wrapper">
-          {% for class in classes %}
-            <a class="class-link" href="class?q={{ class }}">{{ class }}</a>
-          {% endfor %}
+            <div class="info-box-content class-link-wrapper">
+              {% for class in classes %}
+                <a class="class-link" href="class?name={{ class }}">{{ class }}</a>
+              {% endfor %}
+            </div>
+          </div>
         </div>
       </div>
+      {% endfor %}
+      <hr />
+    {% endfor %}
+  {% else %}
+
+  <div class="row">
+    {% for student in students %}
+    <div class="col-md-4 col-sm-6 col-xs-12">
+      <div class="card">
+        <a href="">
+          <img class="card-img-top" src="{% static "image/profile.jpg" %}" alt="Card image" style="max-width: 100%; max-height: 100%">
+          <div class="card-body">
+            <h4 class="card-title">{{ student.name }}</h4>
+            <p class="card-text">Aktuální počet bodů: 5</p>
+          </div>
+        </a>
+      </div>
     </div>
+    {% endfor %}
   </div>
-  {% endfor %}
-  <hr />
-{% endfor %}
+  {% endif %}
 {% endblock %}

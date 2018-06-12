@@ -29,6 +29,15 @@ def get_sidebar_class_context():
     return {'classes': classes}
 
 
+def get_error_response(request, message):
+    """
+    Render view with error
+    """
+    template = loader.get_template('vote_error.html')
+    context = {'error': message}
+    return HttpResponse(template.render(with_metadata(context), request))
+
+
 ### VIEWS #########################################################################################
 
 def overview(request):
@@ -57,8 +66,7 @@ def overview(request):
                 election_overview(request, election, active[0])
     except Election.DoesNotExist:
         pass
-    template = loader.get_template('no_active_row.html')
-    return HttpResponse(template.render(with_metadata({}), request))
+    return get_error_response(request, 'Momentálně neprobíhá žádné volební kolo')
 
 
 def nomination_overview(request, election, active_round):
@@ -133,4 +141,21 @@ def class_overview(request):
     class_name = request.GET.get('name', None)
 
     template = loader.get_template('class_overview.html')
-    return HttpResponse(template.render(with_metadata(get_sidebar_class_context()), request))
+
+    class_name = request.GET.get('name', None)
+    context = {
+        'class_name': class_name,
+    }
+
+    if class_name is not None:
+        try:
+            cls = Class.objects.get(shortname=class_name)
+        except Class.DoesNotExist:
+            msg = "Třída '%s' nebyla nalezena, zkontrolujte si prosím název" % class_name
+            return get_error_response(request, msg)
+
+        students = Student.objects.all().filter(class_id=cls)
+        context['students'] = students
+
+    context.update(get_sidebar_class_context())
+    return HttpResponse(template.render(with_metadata(context), request))
