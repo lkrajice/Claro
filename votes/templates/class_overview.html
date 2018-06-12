@@ -7,6 +7,11 @@ Welcome on the site!
 
 
 {% block custom_css %}
+<link rel="stylesheet" href="{% static "css/style.css" %}">
+{% endblock %}
+
+{% block app_specific_js %}
+<script src="{% static 'js/main.js' %}"></script>
 {% endblock %}
 
 
@@ -58,14 +63,35 @@ Welcome on the site!
 
 
 {% block header %}
-<h1>Title<small>Version 2.0</small></h1>
+<h1>Přehled tříd</h1>
 <ol class="breadcrumb">
-  <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-  <li class="active">Dashboard</li>
+  <li><a href="#"><i class="fa fa-dashboard"></i> Volby</a></li>
+  <li class="active">Přehled tříd</li>
 </ol>
 {% endblock %}
 
 
 {% block content %}
-<h1>{{ test }}</h1>
+<h3>Vyberte si třídu ze seznamu</h3>
+
+{% for letter, grades in classes.items %}
+  {% for grade, classes in grades.items %}
+  <div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-maroon" style="padding: 5px 0 0 7px">
+          {{ letter|cut:"*" }}{{ grade }}*
+        </span>
+
+        <div class="info-box-content class-link-wrapper">
+          {% for class in classes %}
+            <a class="class-link" href="class?q={{ class }}">{{ class }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  <hr />
+{% endfor %}
 {% endblock %}

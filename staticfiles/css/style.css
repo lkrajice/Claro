@@ -16,3 +16,25 @@
     height:40px;
     border-radius:10px
 }
+
+.class-link-wrapper {
+    display: table;
+    table-layout: fixed;
+    width: 700px;
+    height: 80px;
+    padding-left: 40px;
+}
+.class-link {
+    display: table-cell;
+    height: 80px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 30px;
+    border-radius: 10px;
+    padding-top: 7px;
+}
+.class-link:hover {
+    background-color: #f6f6f6;
+}
+.class-link {
+}

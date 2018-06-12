@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import collections
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
@@ -14,10 +16,10 @@ with_metadata = get_context_manager()
 
 
 def get_sidebar_class_context():
-    classes = {}
-    for cls in Class.objects.all():
+    classes = collections.OrderedDict()
+    for cls in Class.objects.all().order_by('shortname'):
         if cls.classtype not in classes:
-            classes[cls.classtype] = {}
+            classes[cls.classtype] = collections.OrderedDict()
 
         grade = cls.shortname[1]
         if grade not in classes[cls.classtype]:
@@ -128,5 +130,7 @@ def class_overview(request):
         Load all students from given class willing to candidate
 
     """
+    class_name = request.GET.get('name', None)
+
     template = loader.get_template('class_overview.html')
     return HttpResponse(template.render(with_metadata(get_sidebar_class_context()), request))
