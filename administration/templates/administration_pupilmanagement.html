@@ -10,7 +10,7 @@ Správa studentů
 <link rel="stylesheet" href="{% static 'css/foolishdjango.css' %}">
 {% endblock %}
 {%block app_specific_js %}
-  <script type="text/javascript" src="{% static 'js/administration.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/livesearch.js' %}"></script>
 {% endblock %}
 
 {% block nav_right_top_list %}
@@ -54,7 +54,7 @@ Správa studentů
         <td>{{student.name}}</td>
         <td>{{student.email}}</td>
         <td><span class="glyphicon glyphicon-wrench glyphiconwrench" value="{{student.name}}"data-toggle="modal" data-target="#manageElectionModal"></span></td>
-      <td><button type="submit" class="notAButton" value="{{student.name}}"><span class="glyphicon glyphicon-minus glyphiconminus"></span></button></td>
+      <td><form method="POST">{% csrf_token %}<button type="submit" class="notAButton" name="remove_pupil" value="{{student.name}}"><span class="glyphicon glyphicon-minus glyphiconminus"></span></button></form></td>
     </tr>
     {%endfor%}
     </tbody>
@@ -71,6 +71,7 @@ Správa studentů
       </div>
       <div class="modal-body">
         <form>
+          {% csrf_token %}
           <div class="form-group">
             <label for="student_name">Jméno studenta:</label>
             <input type="text" class="form-control" id="student_name" required/>
@@ -83,7 +84,7 @@ Správa studentů
             <label for="student_mail">Email:</label>
             <input type="text" class="form-control" id="student_mail" required/>
           </div>
-          <input type="submit" class="btn btn-default" value="Přidat studenta"/>
+          <input type="submit" class="btn btn-default" name="add_student" value="Přidat studenta"/>
         </form>
       </div>
       <div class="modal-footer">
@@ -103,6 +104,7 @@ Správa studentů
       </div>
       <div class="modal-body">
         <form method="POST">
+          {% csrf_token %}
           <div class="form-group">
             <label for="new_student_name">Jméno studenta:</label>
             <input type="text" class="form-control" id="new_student_name" required/>
@@ -119,7 +121,7 @@ Správa studentů
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
+        <button type="button" class="btn btn-default" name="modify_student" data-dismiss="modal">Zavřít</button>
       </div>
     </div>
   </div>

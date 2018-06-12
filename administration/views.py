@@ -12,10 +12,12 @@ import datetime
 BASE_CONTEXT = {}
 with_metadata = get_context_manager(BASE_CONTEXT)
 
+
 def index(request):
     template = loader.get_template("administration_index.html")
     context = {}
     return HttpResponse(template.render(with_metadata(context), request))
+
 
 def election_management(request):
     """
@@ -89,4 +91,16 @@ def pupil_management(request):
         filepath = os.path.join(settings.MEDIA_ROOT, myfile.name)
         StudentDataFileParser.proccess_file(filepath)
 
+        if request.method == 'POST':
+            if request.POST.get("remove_pupil"):
+                print("odebrat záka")
+            elif request.POST.get("add_student"):
+                print("pridat zaka")
+            elif request.POST.get("modify_student"):
+                print("upravit zaka")
+            else:
+                print("Nevyhodnocený post")
+        #Add new student
+        #Add new student
+        #Remove student
     return HttpResponse(template.render(with_metadata(context), request))

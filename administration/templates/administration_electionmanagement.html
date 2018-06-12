@@ -9,7 +9,7 @@ Správa voleb
 
 {% endblock %}
 {%block app_specific_js %}
-  <script type="text/javascript" src="{% static 'js/administration.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/livesearch.js' %}"></script>
 {% endblock %}
 {% block nav_right_top_list %}
 {% endblock %}
@@ -50,7 +50,7 @@ Správa voleb
       <td>{{elcont.active_round.end}}</td>
       <td>{{elcont.active_round_number}}</td>
       <td><span class="glyphicon glyphicon-wrench glyphiconwrench" data-toggle="modal" data-target="#manageElectionModal"></span></td>
-      <td><button type="submit" class="notAButton" value="{{elcont.active_election.title}}"><span class="glyphicon glyphicon-minus glyphiconminus"></span></button></td>
+      <td><form method="POST">{% csrf_token %}<button type="submit" class="notAButton" value="{{elcont.active_election.title}}"><span class="glyphicon glyphicon-minus glyphiconminus"></span></button></form></td>
     {% else %}
       <td>Aktuálně neprobíhají žádné volby</td>
     {% endif%}
@@ -135,6 +135,7 @@ Správa voleb
       </div>
       <div class="modal-body">
         <form method="POST">
+          {% csrf_token %}
           {%if elcont.active_round_number == 1%}
           <!-- if 1 >= 2!-->
           <div class="form-group">
