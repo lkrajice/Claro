@@ -79,6 +79,53 @@ def pupil_management(request):
         "election": False,
         "students": students
     }
+    if request.method == 'POST':
+        if request.POST.get("remove_pupil"):
+            print("Odebrat žáka")
+            data = request.POST.get("remove_pupil")
+            for student in model.Student.objects.all():
+                if student.name == data:
+                    student.delete()
+            return HttpResponse(template.render(with_metadata(context), request))
+        if request.POST.get("add_student"):
+            print("Přidání studenta")
+            st_class = request.POST.get("student_class")
+            for cls in model.Class.objects.all():
+                if cls.shortname == st_class:
+                    st_class = cls
+            pin = model.Pin(pin=StudentDataFileParser.generate_pin())
+            pin.save()
+            st_name = request.POST.get("student_name")
+            st_email = request.POST.get("student_email")
+            print(st_class, pin, st_name, st_email)
+            new_student = model.Student(class_id = st_class, pin_id = pin, name = st_name, email = st_email, profile_image = "NaN")
+            new_student.save()
+            return HttpResponse(template.render(with_metadata(context), request))
+        if request.POST.get("modify_student"):
+            print("upravit zaka")
+            st_name = request.POST.get("modify_student")
+            new_st_name = request.POST.get("name_new_student")
+            new_st_class = request.POST.get("new_student_class")
+            new_student_mail = request.POST.get("new_student_mail")
+
+            st_object=""
+            print("JMENO: "+ st_name)
+            for student in model.Student.objects.all():
+                if student.name == st_name:
+                    st_object = student
+
+            st_class = ""
+            for cls in model.Class.objects.all():
+                if cls.shortname == new_st_class:
+                    st_class = cls
+
+            st_object.class_id = st_class
+            st_object.name = new_st_name
+            st_object.email = new_student_mail
+
+            st_object.save()
+            return HttpResponse(template.render(with_metadata(context), request))
+
     """
         Upload new file
         ------------------------
@@ -91,16 +138,4 @@ def pupil_management(request):
         filepath = os.path.join(settings.MEDIA_ROOT, myfile.name)
         StudentDataFileParser.proccess_file(filepath)
 
-        if request.method == 'POST':
-            if request.POST.get("remove_pupil"):
-                print("odebrat záka")
-            elif request.POST.get("add_student"):
-                print("pridat zaka")
-            elif request.POST.get("modify_student"):
-                print("upravit zaka")
-            else:
-                print("Nevyhodnocený post")
-        #Add new student
-        #Add new student
-        #Remove student
     return HttpResponse(template.render(with_metadata(context), request))

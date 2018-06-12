@@ -11,6 +11,7 @@ Správa studentů
 {% endblock %}
 {%block app_specific_js %}
   <script type="text/javascript" src="{% static 'js/livesearch.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/administration.js' %}"></script>
 {% endblock %}
 
 {% block nav_right_top_list %}
@@ -27,15 +28,13 @@ Správa studentů
 {% block content %}
 {# End of sidebar #}
 <!-- Election check if there are election do not allow to load new data !-->
-{% if election == False %}
-<br>
-
-{% else %}
-  <div class="alert alert-warning alert-dismissible fade in">
+<!--
+<div class="alert alert-warning alert-dismissible fade in">
     <a href="#" class="close" data-dismiss="alert" aria-label="close">X</a>
     <strong>Upozornění!</strong> Není možné nahrávat nové studenty pokud probíhají volby
-  </div>
-{% endif %}
+</div>
+!-->
+<br>
 <span class="glyphicon glyphicon-plus glyphiconplus"  data-toggle="modal" data-target="#addPupil"></span>
 <span class="glyphicon glyphicon-cloud-upload uploadglyphicon"  data-toggle="modal" data-target="#uploadData"></span>
 <div class="form-group pull-right">
@@ -53,8 +52,8 @@ Správa studentů
     <tr>
         <td>{{student.name}}</td>
         <td>{{student.email}}</td>
-        <td><span class="glyphicon glyphicon-wrench glyphiconwrench" value="{{student.name}}"data-toggle="modal" data-target="#manageElectionModal"></span></td>
-      <td><form method="POST">{% csrf_token %}<button type="submit" class="notAButton" name="remove_pupil" value="{{student.name}}"><span class="glyphicon glyphicon-minus glyphiconminus"></span></button></form></td>
+        <td><span class="glyphicon glyphicon-wrench glyphiconwrench" name="studentid" value="{{student.name}} "data-toggle="modal" name="modify_student" data-target="#manageElectionModal"></span></td>
+      <td><form method="POST">{% csrf_token %}<button type="submit" class="notAButton" name="remove_pupil" value="{{student.name}}"><span class="glyphicon glyphicon-remove glyphiconminus"></span></button></form></td>
     </tr>
     {%endfor%}
     </tbody>
@@ -70,19 +69,19 @@ Správa studentů
         <h4 class="modal-title">Nový student</h4>
       </div>
       <div class="modal-body">
-        <form>
+        <form method="POST">
           {% csrf_token %}
           <div class="form-group">
             <label for="student_name">Jméno studenta:</label>
-            <input type="text" class="form-control" id="student_name" required/>
+            <input type="text" class="form-control" id="student_name" name="student_name" required/>
           </div>
           <div class="form-group">
             <label for="student_class">Třída(Zkratka):</label>
-            <input type="text" class="form-control" id="student_class" required/>
+            <input type="text" class="form-control" id="student_class" name="student_class" required/>
           </div>
           <div class="form-group">
             <label for="student_mail">Email:</label>
-            <input type="text" class="form-control" id="student_mail" required/>
+            <input type="text" class="form-control" id="student_mail"  name="student_email" required/>
           </div>
           <input type="submit" class="btn btn-default" name="add_student" value="Přidat studenta"/>
         </form>
@@ -106,8 +105,8 @@ Správa studentů
         <form method="POST">
           {% csrf_token %}
           <div class="form-group">
-            <label for="new_student_name">Jméno studenta:</label>
-            <input type="text" class="form-control" id="new_student_name" required/>
+            <label for="name_new_student">Jméno studenta:</label>
+            <input type="text" class="form-control" id="name_new_student" required/>
           </div>
           <div class="form-group">
             <label for="new_student_class">Třída:</label>
@@ -117,11 +116,11 @@ Správa studentů
             <label for="new_student_mail">Email:</label>
             <input type="text" class="form-control" id="new_student_mail" required/>
           </div>
-          <input type="submit" class="btn btn-default" value="Uložit změny"/>
+          <button type="submit" class="btn btn-default" name="modify_student" id="btn_modify_student"value="">Uložit změny</button>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" name="modify_student" data-dismiss="modal">Zavřít</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Zavřít</button>
       </div>
     </div>
   </div>

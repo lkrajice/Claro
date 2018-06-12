@@ -1,4 +1,7 @@
-
+.notAButton {
+    border:none;
+    background:none
+}
 
 .glyphiconplus {
 color : green;

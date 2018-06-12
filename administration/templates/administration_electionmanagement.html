@@ -50,7 +50,7 @@ Správa voleb
       <td>{{elcont.active_round.end}}</td>
       <td>{{elcont.active_round_number}}</td>
       <td><span class="glyphicon glyphicon-wrench glyphiconwrench" data-toggle="modal" data-target="#manageElectionModal"></span></td>
-      <td><form method="POST">{% csrf_token %}<button type="submit" class="notAButton" value="{{elcont.active_election.title}}"><span class="glyphicon glyphicon-minus glyphiconminus"></span></button></form></td>
+      <td><form method="POST">{% csrf_token %}<button type="submit" class="notAButton" value="{{elcont.active_election.title}}"><span class="glyphicon glyphicon-remove glyphiconminus"></span></button></form></td>
     {% else %}
       <td>Aktuálně neprobíhají žádné volby</td>
     {% endif%}
