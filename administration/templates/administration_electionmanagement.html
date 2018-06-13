@@ -115,7 +115,7 @@ Správa voleb
             <label for="election_third_round_end">Trvání třetího kola (pokud na něj dojde):</label>
             <input type="number" name="third_round_days" class="form-control" id="election_third_round_end" placeholder="Zadejte počet dní" min="1" required/>
           </div>
-          <input type="submit" class="btn btn-default" value="Založit nové volby"/>
+          <input type="submit" class="btn btn-default" name="new_election" value="Založit nové volby"/>
         </form>
       </div>
       <div class="modal-footer">
@@ -165,7 +165,7 @@ Správa voleb
             <input type="text" class="form-control" id="third_election_name"  value="{{elcont.active_election.title}}" required/>
           </div>
           {%endif%}
-          <input type="submit" class="btn btn-default" value="Uložit změny"/>
+          <input type="submit" class="btn btn-default" name="save_election_changes" value="Uložit změny"/>
         </form>
       </div>
       <div class="modal-footer">

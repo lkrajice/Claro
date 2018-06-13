@@ -76,6 +76,9 @@ class Election(models.Model):
     class Meta:
         db_table = "Election"
 
+    def get_rouds(self):
+        return Round.objects.all().filter(election_id=self)
+
 
 class RoundType(models.Model):
     """
