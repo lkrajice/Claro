@@ -101,8 +101,9 @@ class StudentDataFileParser:
 
 
 class MessageToPage:
-    def __init__(self, message_type, message_text, message_vars):
+    def __init__(self, message_type, message_bold, message_text, message_vars=""):
         self.message_type = message_type
+        self.message_bold = message_bold
         self.message_text = message_text
         self.message_vars = message_vars
 

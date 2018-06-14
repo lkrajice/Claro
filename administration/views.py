@@ -73,7 +73,7 @@ def election_management(request):
             model.Round(election_id=election, type_id=types['nomination'], round_number=2, start=second_round_start, end=second_round_end),
             model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
         ])
-        message = util.MessageToPage("success", "Úspěšně jste vytvořil nové volby", "")
+        message = util.MessageToPage("success", "Výborně!", "Úspěšně jste vytvořil nové volby", "")
         context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
 
@@ -99,7 +99,7 @@ def election_management(request):
         third_round.end = third_round_end
         third_round.save()
 
-        message = util.MessageToPage("success", "Úspěšně jste uložil změny", "")
+        message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny", "")
         context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
 
@@ -120,7 +120,7 @@ def election_management(request):
         third_round.end = third_round_end
         third_round.save()
 
-        message = util.MessageToPage("success", "Úspěšně jste uložil změny", "")
+        message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny", "")
         context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
 
@@ -132,12 +132,11 @@ def election_management(request):
         selected_election.title = election_name
         selected_election.save()
 
-        message = util.MessageToPage("success", "Úspěšně jste uložil změny", "")
+        message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny", "")
         context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
 
     if request.POST.get("cancel_election"):
-        print("Cancel elections!")
         election_name = request.POST.get("cancel_election")
         elections = model.Election.objects.all()
         active_election = elections.get(title=election_name)
@@ -146,7 +145,7 @@ def election_management(request):
             rnd.delete()
         active_election.delete()
 
-        message = util.MessageToPage("success", "Úspěšně jste zrušil volby", "")
+        message = util.MessageToPage("success", "Výborně!", "Úspěšně jste zrušil volby", "")
         context.update({"message_active": True, "message": message})
     return HttpResponse(template.render(with_metadata(context), request))
 
@@ -156,7 +155,6 @@ def pupil_management(request):
     students = model.Student.objects.all()
     context.update(
         {
-            "election": False,
             "students": students
         }
     )
@@ -168,13 +166,13 @@ def pupil_management(request):
         pin = model.Pin(pin=StudentDataFileParser.generate_pin())
         pin.save()
         model.Student(class_id=st_class, pin_id=pin, name=st_name, email=st_email, profile_image="NaN").save()
-        message = util.MessageToPage("success", "<b>Výborně!</b> Úspěšně jste přidal studenta", "")
+        message = util.MessageToPage("success", "Výborně!", "Úspěšně jste přidal studenta", "")
         context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
     if request.POST.get("remove_student"):
         st_name = request.POST.get("remove_student")
         students.filter(name=st_name).delete()
-        message = util.MessageToPage("success", "Úspěšně jste smazal studenta", "")
+        message = util.MessageToPage("success", "Výborně!", "Úspěšně jste smazal studenta", "")
         context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
     """
@@ -188,6 +186,6 @@ def pupil_management(request):
         fs.save(myfile.name, myfile)
         filepath = os.path.join(settings.MEDIA_ROOT, myfile.name)
         StudentDataFileParser.proccess_file(filepath)
-        message = util.MessageToPage("success", "Úspěšně jste nahrál soubor", "")
+        message = util.MessageToPage("success", "Výborně!", "Úspěšně jste nahrál soubor")
         context.update({"message_active": True, "message": message})
     return HttpResponse(template.render(with_metadata(context), request))
