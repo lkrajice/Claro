@@ -32,7 +32,9 @@ Správa voleb
 </div>
 {% endif %}
 <!-- Create new election !-->
+{% if active_election == False %}
 <span class="glyphicon glyphicon-plus glyphiconplus"  data-toggle="modal" data-target="#createNewElectionModal"></span>
+{% endif %}
 <!-- Active election !-->
 <table class="table">
   <caption>Aktuální volby</caption>

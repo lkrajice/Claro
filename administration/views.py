@@ -16,6 +16,7 @@ with_metadata = get_context_manager(BASE_CONTEXT)
 
 
 def index(request):
+    context={}
     template = loader.get_template("administration_index.html")
     return HttpResponse(template.render(with_metadata(context), request))
 
@@ -25,6 +26,14 @@ def election_management(request):
     template = loader.get_template("administration_electionmanagement.html")
     elections = model.Election.objects.all()
     today = datetime.datetime.today().strftime('%Y-%m-%d')
+
+    context.update(
+        {
+            "active_elections": False,
+            "today": today,
+            "elections": elections
+        }
+    )
 
     #Check if active elections
     for election in elections:
@@ -41,13 +50,6 @@ def election_management(request):
                         "active_round": round
                     }
                 )
-    context.update(
-        {
-            "active_elections": False,
-            "today": today,
-            "elections": elections
-        }
-    )
 
     if request.POST.get("new_election"):
         election_name = request.POST.get("election_name")
