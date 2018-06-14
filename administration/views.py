@@ -76,7 +76,8 @@ def election_management(request):
             model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
         ])
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste vytvořil nové volby", "")
-        context.update({"message_active": True, "message": message})
+        elections = model.Election.objects.all()
+        context.update({"message_active": True, "message": message, "elections": elections})
         return HttpResponse(template.render(with_metadata(context), request))
 
     if request.POST.get("first_save_changes"):
@@ -101,7 +102,7 @@ def election_management(request):
         third_round.end = third_round_end
         third_round.save()
 
-        message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny", "")
+        message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny")
         context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
 
@@ -141,11 +142,12 @@ def election_management(request):
     if request.POST.get("cancel_election"):
         election_name = request.POST.get("cancel_election")
         elections = model.Election.objects.all()
-        active_election = elections.get(title=election_name)
-        rounds = active_election.get_rounds
-        for rnd in rounds:
-            rnd.delete()
-        active_election.delete()
+        active_elections = elections.filter(title=election_name)
+        for election in active_elections:
+            rounds = election.get_rounds
+            for rnd in rounds:
+                rnd.delete()
+            election.delete()
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste zrušil volby", "")
         context.update({"message_active": True, "message": message})
