@@ -76,8 +76,7 @@ def election_management(request):
             model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
         ])
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste vytvořil nové volby", "")
-        elections = model.Election.objects.all()
-        context.update({"message_active": True, "message": message, "elections": elections})
+        context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
 
     if request.POST.get("first_save_changes"):

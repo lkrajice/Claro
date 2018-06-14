@@ -11,7 +11,8 @@ Správa studentů
 {% endblock %}
 {%block app_specific_js %}
   <script type="text/javascript" src="{% static 'js/livesearch.js' %}"></script>
-  <script type="text/javascript" src="{% static 'js/administration.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/retardedDjango.js' %}"></script>
+
 {% endblock %}
 
 {% block nav_right_top_list %}
@@ -85,7 +86,7 @@ Správa studentů
           </div>
           <div class="form-group">
             <label for="student_mail">Email:</label>
-            <input type="email" class="form-control" id="student_mail"  name="student_email" required/>
+            <input type="email" class="form-control" id="student_mail" name="student_email" placeholder="" required/>
           </div>
           <input type="submit" class="btn btn-default" name="add_student" value="Přidat studenta"/>
         </form>
