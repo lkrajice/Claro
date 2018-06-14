@@ -13,7 +13,6 @@ import datetime
 
 BASE_CONTEXT = {}
 with_metadata = get_context_manager(BASE_CONTEXT)
-context = {"message_active": False}
 
 
 def index(request):
@@ -22,6 +21,7 @@ def index(request):
 
 
 def election_management(request):
+    context = {"message_active": False}
     template = loader.get_template("administration_electionmanagement.html")
     elections = model.Election.objects.all()
     today = datetime.datetime.today().strftime('%Y-%m-%d')
@@ -151,6 +151,7 @@ def election_management(request):
 
 
 def pupil_management(request):
+    context = {"message_active": False}
     template = loader.get_template("administration_pupilmanagement.html")
     students = model.Student.objects.all()
     classes = model.Class.objects.all().order_by('shortname')
