@@ -41,7 +41,6 @@ def election_management(request):
                         "active_round": round
                     }
                 )
-                return HttpResponse(template.render(with_metadata(context), request))
     context.update(
         {
             "active_elections": False,
@@ -138,13 +137,13 @@ def election_management(request):
         return HttpResponse(template.render(with_metadata(context), request))
 
     if request.POST.get("cancel_election"):
-
+        print("Cancel elections!")
         election_name = request.POST.get("cancel_election")
         elections = model.Election.objects.all()
         active_election = elections.get(title=election_name)
         rounds = active_election.get_rounds
-        for round in rounds:
-            round.delete()
+        for rnd in rounds:
+            rnd.delete()
         active_election.delete()
 
         message = util.MessageToPage("success", "Úspěšně jste zrušil volby", "")
