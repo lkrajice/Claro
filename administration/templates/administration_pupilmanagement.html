@@ -27,13 +27,13 @@ Správa studentů
 
 {% block content %}
 {# End of sidebar #}
-<!-- Election check if there are election do not allow to load new data !-->
-<!--
-<div class="alert alert-warning alert-dismissible fade in">
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">X</a>
-    <strong>Upozornění!</strong> Není možné nahrávat nové studenty pokud probíhají volby
+{% if message_active%}
+<br>
+<div class="alert alert-{{message.message_type}} alert-dismissible fade in">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">X</a>
+  {{message.message_text}}
 </div>
-!-->
+{% endif %}
 <br>
 <span class="glyphicon glyphicon-plus glyphiconplus"  data-toggle="modal" data-target="#addPupil"></span>
 <span class="glyphicon glyphicon-cloud-upload uploadglyphicon"  data-toggle="modal" data-target="#uploadData"></span>
@@ -42,16 +42,17 @@ Správa studentů
 </div>
 <table class="table table-striped" id="userTbl">
     <thead>
-    <tr>
-      <th>Jméno</th>
-      <th>Email</th>
-    </tr>
+      <tr>
+        <th>Jméno</th>
+        <th>Email</th>
+      </tr>
     </thead>
     <tbody>
     {% for student in students%}
     <tr>
         <td>{{student.name}}</td>
         <td>{{student.email}}</td>
+        <td><form method="POST">{% csrf_token %}<button type="submit" class="notAButton" name="remove_student" value="{{student.name}}"><span class="glyphicon glyphicon-remove glyphiconminus"></span></button></form></td>
     </tr>
     {%endfor%}
     </tbody>
@@ -101,7 +102,7 @@ Správa studentů
       </div>
       <div class="modal-body">
         <div class="alert alert-danger" role="alert">
-          <b color="red">Varování: </b>Toto smaže databázi! Nenahrávejte žádná data pokud probíhají volby !
+          <b style="color:red">Varování: </b>Toto smaže databázi! Nenahrávejte žádná data pokud probíhají volby !
         </div>
         <form method="post" enctype="multipart/form-data">
           {% csrf_token %}

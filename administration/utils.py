@@ -98,3 +98,12 @@ class StudentDataFileParser:
                 data (list)- list of lists with data from source file
         """
         return self.data
+
+
+class MessageToPage:
+    def __init__(self, message_type, message_text, message_vars):
+        self.message_type = message_type
+        self.message_text = message_text
+        self.message_vars = message_vars
+
+

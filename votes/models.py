@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Define db model for parlament application"""
 import datetime
-import math
 
 from django.db import models
 
@@ -76,8 +75,21 @@ class Election(models.Model):
     class Meta:
         db_table = "Election"
 
-    def get_rouds(self):
+    @property
+    def get_rounds(self):
         return Round.objects.all().filter(election_id=self)
+
+    @property
+    def get_first_round(self):
+        return Round.objects.all().get(election_id=self, round_number=1)
+
+    @property
+    def get_second_round(self):
+        return Round.objects.all().get(election_id=self, round_number=2)
+
+    @property
+    def get_third_round(self):
+        return Round.objects.all().get(election_id=self, round_number=3)
 
 
 class RoundType(models.Model):
@@ -123,6 +135,7 @@ class Round(models.Model):
             return -1;
         return 0;
 
+
     @property
     def percent(self):
         """
@@ -139,6 +152,14 @@ class Round(models.Model):
             start_to_end = 24 * 60 * 60
 
         return min(100, int(from_start // (start_to_end / 100)))
+
+    @property
+    def convert_start_time(self):
+        return datetime.datetime.strftime(self.start, "%Y-%m-%d")
+
+    @property
+    def convert_end_time(self):
+        return datetime.datetime.strftime(self.end, "%Y-%m-%d")
 
 
 class Candidate(models.Model):
@@ -167,59 +188,3 @@ class Vote(models.Model):
 
     class Meta:
         db_table = "Vote"
-
-
-class ElectionController:
-    #REWORK this class
-    def __init__(self):
-        self.is_active_election = self.is_active_election()
-        self.all_election_active_rounds = [Round.objects.all()[0], Round.objects.all()[1], Round.objects.all()[2]]
-        self.first_round = Round.objects.all()[0]
-        self.second_round = Round.objects.all()[1]
-        self.third_round = Round.objects.all()[2]
-        self.all_active_rounds = self.fill_all_active_rounds()
-        self.active_election = self.fill_active_election()
-        self.active_round = self.fill_active_round()
-        self.active_round_number = self.fill_round_number()
-        self.all_rounds = Round.objects.all()
-        self.all_non_active_rounds = self.fill_all_not_active_rounds()
-
-    def is_active_election(self):
-        today = datetime.datetime.now().strftime("%Y-%m-%d")
-        res = 0
-        r = [Round.objects.all()[0], Round.objects.all()[1], Round.objects.all()[2]]
-        for round in r:
-            if round.end.strftime("%Y-%m-%d") < today:
-                res +=1
-        if res == 3:
-            print("NN")
-            return False
-        print("YY")
-        return True
-
-    def fill_all_active_rounds(self):
-        newlist = []
-        list = self.all_election_active_rounds
-        today = datetime.datetime.now().strftime("%Y-%m-%d")
-        for round in list:
-            if round.start.strftime("%Y-%m-%d") <= today and round.end.strftime("%Y-%m-%d") >= today:
-               newlist.append(round)
-        return newlist
-
-    def fill_active_election(self):
-        return self.all_active_rounds[0].election_id
-
-    def fill_active_round(self):
-        return self.all_active_rounds[0]
-
-    def fill_round_number(self):
-        return self.all_active_rounds[0].round_number
-
-    def fill_all_not_active_rounds(self):
-        list = []
-        for round in self.all_rounds:
-            list.append(round)
-        del list[0]
-        del list[1]
-        del list[2]
-        return list

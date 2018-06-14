@@ -7,65 +7,48 @@ from django.conf import settings
 from votes import models as model
 from .utils import StudentDataFileParser
 from claro.utils import get_context_manager
+from . import utils as util
 import datetime
+
 
 BASE_CONTEXT = {}
 with_metadata = get_context_manager(BASE_CONTEXT)
+context = {"message_active": False}
 
 
 def index(request):
     template = loader.get_template("administration_index.html")
-    context = {}
     return HttpResponse(template.render(with_metadata(context), request))
 
 
 def election_management(request):
-    """
-        SHOWS
-            App where you can manage elections and see their history
-    """
     template = loader.get_template("administration_electionmanagement.html")
+    elections = model.Election.objects.all()
     today = datetime.datetime.today().strftime('%Y-%m-%d')
 
-    el = model.ElectionController()
-    context = {
-        "today": today,
-        "elcont" : el,
-    }
-
-    """
-        Create new election
-        --------------------
-        This script will take all data from POST and creates correct times for election rounds and add record to database
-    """
-    if request.method == 'POST':
-        election_name = request.POST.get("election_name")
-        date_election_start = request.POST.get("date_election_start")
-        first_round_days = int(request.POST.get("first_round_days")) - 1
-        second_round_days = int(request.POST.get("second_round_days")) - 1
-        third_round_days = int(request.POST.get("third_round_days")) - 1
-
-        first_round_end = (datetime.datetime.strptime(date_election_start, "%Y-%m-%d")
-                           + datetime.timedelta(days=first_round_days)).date()
-        second_round_start = first_round_end + datetime.timedelta(days=1)
-        second_round_end = second_round_start + datetime.timedelta(days=second_round_days)
-
-        third_round_start = second_round_end + datetime.timedelta(days=1)
-        third_round_end = third_round_start + datetime.timedelta(days=third_round_days)
-
-        election = model.Election(title=election_name)
-        election.save()
-
-        all_round_types = model.RoundType.objects.all()
-        types = {t.name: t for t in all_round_types}
-        model.Round.objects.bulk_create([
-            model.Round(election_id=election, type_id=types['nomination'], round_number=1, start=date_election_start, end=first_round_end),
-            model.Round(election_id=election, type_id=types['nomination'], round_number=2, start=second_round_start, end=second_round_end),
-            model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
-        ])
-        context.update({'created_election':True})
-    return HttpResponse(template.render(with_metadata(context), request))
-
+    #Check if active elections
+    for election in elections:
+        for round in election.get_rounds:
+            if round.compare == 0:
+                context.update(
+                    {
+                        "active_elections": True,
+                        "first_round": election.get_first_round,
+                        "second_round": election.get_second_round,
+                        "third_round": election.get_third_round,
+                        "today": today,
+                        "elections": elections,
+                        "active_round": round
+                    }
+                )
+                return HttpResponse(template.render(with_metadata(context), request))
+    context.update(
+        {
+            "active_elections": False,
+            "today": today,
+            "elections": elections
+        }
+    )
 
     if request.POST.get("new_election"):
         election_name = request.POST.get("election_name")
@@ -85,78 +68,116 @@ def election_management(request):
         election = model.Election(title=election_name)
         election.save()
 
-        all_round_types = model.RoundType.objects.all()
-        types = {t.name: t for t in all_round_types}
+        types = {t.name: t for t in model.RoundType.objects.all()}
         model.Round.objects.bulk_create([
             model.Round(election_id=election, type_id=types['nomination'], round_number=1, start=date_election_start, end=first_round_end),
             model.Round(election_id=election, type_id=types['nomination'], round_number=2, start=second_round_start, end=second_round_end),
             model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
         ])
-        context.update({'created_election': True})
+        message = util.MessageToPage("success", "Úspěšně jste vytvořil nové volby", "")
+        context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
 
-    if request.POST.get("save_election_changes"):
+    if request.POST.get("first_save_changes"):
+        original_name = request.POST.get("first_save_changes")
+        election_name = request.POST.get("election_name")
+        second_round_start = request.POST.get("second_round_start")
+        second_round_end = request.POST.get("second_round_end")
+        third_round_start = request.POST.get("third_round_start")
+        third_round_end = request.POST.get("third_round_end")
+
+        selected_election = model.Election.objects.all().get(title=original_name)
+        selected_election.title = election_name
+        selected_election.save()
+
+        rounds = selected_election.get_rounds
+        second_round = rounds[1]
+        second_round.start = second_round_start
+        second_round.end = second_round_end
+        second_round.save()
+        third_round = rounds[2]
+        third_round.start = third_round_start
+        third_round.end = third_round_end
+        third_round.save()
+
+        message = util.MessageToPage("success", "Úspěšně jste uložil změny", "")
+        context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
+
+    if request.POST.get("second_save_changes"):
+        original_name = request.POST.get("second_save_changes")
+        election_name = request.POST.get("election_name")
+        third_round_start = request.POST.get("third_round_start")
+        third_round_end = request.POST.get("third_round_end")
+
+        selected_election = model.Election.objects.all().get(title=original_name)
+        selected_election.title = election_name
+        selected_election.save()
+
+        rounds = selected_election.get_rounds
+
+        third_round = rounds[2]
+        third_round.start = third_round_start
+        third_round.end = third_round_end
+        third_round.save()
+
+        message = util.MessageToPage("success", "Úspěšně jste uložil změny", "")
+        context.update({"message_active": True, "message": message})
+        return HttpResponse(template.render(with_metadata(context), request))
+
+    if request.POST.get("third_save_changes"):
+        original_name = request.POST.get("third_save_changes")
+        election_name = request.POST.get("election_name")
+
+        selected_election = model.Election.objects.all().get(title=original_name)
+        selected_election.title = election_name
+        selected_election.save()
+
+        message = util.MessageToPage("success", "Úspěšně jste uložil změny", "")
+        context.update({"message_active": True, "message": message})
+        return HttpResponse(template.render(with_metadata(context), request))
+
+    if request.POST.get("cancel_election"):
+
+        election_name = request.POST.get("cancel_election")
+        elections = model.Election.objects.all()
+        active_election = elections.get(title=election_name)
+        rounds = active_election.get_rounds
+        for round in rounds:
+            round.delete()
+        active_election.delete()
+
+        message = util.MessageToPage("success", "Úspěšně jste zrušil volby", "")
+        context.update({"message_active": True, "message": message})
     return HttpResponse(template.render(with_metadata(context), request))
-def pupil_management(request):
-    """
-        SHOWS
-            App where you can manage students that can vote
-    """
 
+
+def pupil_management(request):
     template = loader.get_template("administration_pupilmanagement.html")
     students = model.Student.objects.all()
-    context = {
-        "election": False,
-        "students": students
-    }
-    if request.method == 'POST':
-        if request.POST.get("remove_pupil"):
-            print("Odebrat žáka")
-            data = request.POST.get("remove_pupil")
-            for student in model.Student.objects.all():
-                if student.name == data:
-                    student.delete()
-            return HttpResponse(template.render(with_metadata(context), request))
-        if request.POST.get("add_student"):
-            print("Přidání studenta")
-            st_class = request.POST.get("student_class")
-            for cls in model.Class.objects.all():
-                if cls.shortname == st_class:
-                    st_class = cls
-            pin = model.Pin(pin=StudentDataFileParser.generate_pin())
-            pin.save()
-            st_name = request.POST.get("student_name")
-            st_email = request.POST.get("student_email")
-            print(st_class, pin, st_name, st_email)
-            new_student = model.Student(class_id = st_class, pin_id = pin, name = st_name, email = st_email, profile_image = "NaN")
-            new_student.save()
-            return HttpResponse(template.render(with_metadata(context), request))
-        if request.POST.get("modify_student"):
-            print("upravit zaka")
-            st_name = request.POST.get("modify_student")
-            new_st_name = request.POST.get("name_new_student")
-            new_st_class = request.POST.get("new_student_class")
-            new_student_mail = request.POST.get("new_student_mail")
-
-            st_object=""
-            print("JMENO: "+ st_name)
-            for student in model.Student.objects.all():
-                if student.name == st_name:
-                    st_object = student
-
-            st_class = ""
-            for cls in model.Class.objects.all():
-                if cls.shortname == new_st_class:
-                    st_class = cls
-
-            st_object.class_id = st_class
-            st_object.name = new_st_name
-            st_object.email = new_student_mail
-
-            st_object.save()
-            return HttpResponse(template.render(with_metadata(context), request))
-
+    context.update(
+        {
+            "election": False,
+            "students": students
+        }
+    )
+    if request.POST.get("add_student"):
+        st_class_input = request.POST.get("student_class")
+        st_name = request.POST.get("student_name")
+        st_email = request.POST.get("student_email")
+        st_class = model.Class.objects.get(shortname=st_class_input)
+        pin = model.Pin(pin=StudentDataFileParser.generate_pin())
+        pin.save()
+        model.Student(class_id=st_class, pin_id=pin, name=st_name, email=st_email, profile_image="NaN").save()
+        message = util.MessageToPage("success", "<b>Výborně!</b> Úspěšně jste přidal studenta", "")
+        context.update({"message_active": True, "message": message})
+        return HttpResponse(template.render(with_metadata(context), request))
+    if request.POST.get("remove_student"):
+        st_name = request.POST.get("remove_student")
+        students.filter(name=st_name).delete()
+        message = util.MessageToPage("success", "Úspěšně jste smazal studenta", "")
+        context.update({"message_active": True, "message": message})
+        return HttpResponse(template.render(with_metadata(context), request))
     """
         Upload new file
         ------------------------
@@ -168,5 +189,6 @@ def pupil_management(request):
         fs.save(myfile.name, myfile)
         filepath = os.path.join(settings.MEDIA_ROOT, myfile.name)
         StudentDataFileParser.proccess_file(filepath)
-
+        message = util.MessageToPage("success", "Úspěšně jste nahrál soubor", "")
+        context.update({"message_active": True, "message": message})
     return HttpResponse(template.render(with_metadata(context), request))
