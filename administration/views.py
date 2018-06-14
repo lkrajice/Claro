@@ -150,7 +150,7 @@ def election_management(request):
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste zrušil volby")
         context.update({"message_active": True, "message": message, "active_elections": False})
-    return HttpResponse(template.render(with_metadata(context), request))
+        return HttpResponse(template.render(with_metadata(context), request))
 
 
 def pupil_management(request):
