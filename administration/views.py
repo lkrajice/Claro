@@ -76,7 +76,7 @@ def election_management(request):
             model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
         ])
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste vytvořil nové volby", "")
-        context.update({"message_active": True, "message": message})
+        context.update({"message_active": True, "message": message, "active_elections":True, "elections":model.Election.objects.all()})
         return HttpResponse(template.render(with_metadata(context), request))
 
     if request.POST.get("first_save_changes"):
@@ -102,7 +102,7 @@ def election_management(request):
         third_round.save()
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny")
-        context.update({"message_active": True, "message": message})
+        context.update({"message_active": True, "message": message, "active_elections":True, "elections":model.Election.objects.all()})
         return HttpResponse(template.render(with_metadata(context), request))
 
     if request.POST.get("second_save_changes"):
@@ -123,7 +123,7 @@ def election_management(request):
         third_round.save()
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny", "")
-        context.update({"message_active": True, "message": message})
+        context.update({"message_active": True, "message": message, "active_elections":True, "elections":model.Election.objects.all()})
         return HttpResponse(template.render(with_metadata(context), request))
 
     if request.POST.get("third_save_changes"):
@@ -135,7 +135,7 @@ def election_management(request):
         selected_election.save()
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny", "")
-        context.update({"message_active": True, "message": message})
+        context.update({"message_active": True, "message": message, "active_elections":True, "elections":model.Election.objects.all()})
         return HttpResponse(template.render(with_metadata(context), request))
 
     if request.POST.get("cancel_election"):
@@ -148,8 +148,8 @@ def election_management(request):
                 rnd.delete()
             election.delete()
 
-        message = util.MessageToPage("success", "Výborně!", "Úspěšně jste zrušil volby", "")
-        context.update({"message_active": True, "message": message})
+        message = util.MessageToPage("success", "Výborně!", "Úspěšně jste zrušil volby")
+        context.update({"message_active": True, "message": message, "active_elections": False})
     return HttpResponse(template.render(with_metadata(context), request))
 
 
