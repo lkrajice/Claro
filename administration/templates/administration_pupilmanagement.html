@@ -76,7 +76,12 @@ Správa studentů
           </div>
           <div class="form-group">
             <label for="student_class">Třída(Zkratka):</label>
-            <input type="text" class="form-control" id="student_class" name="student_class" required/>
+            <select class="form-control" id="student_class" name="student_class" required>
+              <option value="">Vyberte třídu studenta</option>
+              {% for class in classes %}
+              <option value="{{class.shortname}}">{{class.shortname}}</option>
+              {% endfor %}
+            </select>
           </div>
           <div class="form-group">
             <label for="student_mail">Email:</label>

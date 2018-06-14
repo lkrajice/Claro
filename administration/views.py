@@ -153,9 +153,11 @@ def election_management(request):
 def pupil_management(request):
     template = loader.get_template("administration_pupilmanagement.html")
     students = model.Student.objects.all()
+    classes = model.Class.objects.all().order_by('shortname')
     context.update(
         {
-            "students": students
+            "students": students,
+            "classes": classes
         }
     )
     if request.POST.get("add_student"):
