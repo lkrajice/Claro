@@ -1,5 +1,5 @@
 function replaceDiacritics(input){
-    var diacritics = [["ě","e"], ["š","s"], ["č","c"], ["ř","r"], ["ž", "z"], ["ý","y"], ["á","a"], ["í","i"], ["é","e"], ["ň", "n"]]
+    var diacritics = [["ě","e"], ["š","s"], ["č","c"], ["ř","r"], ["ž", "z"], ["ý","y"], ["á","a"], ["í","i"], ["é","e"], ["ň", "n"], ["ó", "o"], ["ú", "u"], ["ů", "u"], ["ň", "n"], ["ť", "t"]]
     var word = ""
     var splitted_word = input.split("")
     for(var i = 0; i<splitted_word.length;i++){
