@@ -45,6 +45,7 @@ Správa studentů
     <thead>
       <tr>
         <th>Jméno</th>
+        <th>Třída</th>
         <th>Email</th>
       </tr>
     </thead>
@@ -52,6 +53,7 @@ Správa studentů
     {% for student in students%}
     <tr>
         <td>{{student.name}}</td>
+        <td>{{student.class_id.shortname}}</td>
         <td>{{student.email}}</td>
         <td><form method="POST">{% csrf_token %}<button type="submit" class="notAButton" name="remove_student" value="{{student.name}}"><span class="glyphicon glyphicon-remove glyphiconminus"></span></button></form></td>
     </tr>
