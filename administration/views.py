@@ -12,30 +12,30 @@ import datetime
 
 
 BASE_CONTEXT = {}
-with_metadata = get_context_manager(BASE_CONTEXT)
+with_metadata = get_context_manager()
 
 
 def index(request):
-    context={}
+    context = {}
     template = loader.get_template("administration_index.html")
     return HttpResponse(template.render(with_metadata(context), request))
 
 
-def election_management(request):
-    context = {"message_active": False}
-    template = loader.get_template("administration_electionmanagement.html")
+def context_update():
+    context = {}
     elections = model.Election.objects.all()
     today = datetime.datetime.today().strftime('%Y-%m-%d')
 
     context.update(
         {
+            "message_active": False,
             "active_elections": False,
             "today": today,
             "elections": elections
         }
     )
 
-    #Check if active elections
+    # Check if active elections
     for election in elections:
         for round in election.get_rounds:
             if round.compare == 0:
@@ -50,6 +50,12 @@ def election_management(request):
                         "active_round": round
                     }
                 )
+    return context
+
+
+def election_management(request):
+    context = context_update()
+    template = loader.get_template("administration_electionmanagement.html")
 
     if request.POST.get("new_election"):
         election_name = request.POST.get("election_name")
@@ -76,7 +82,8 @@ def election_management(request):
             model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
         ])
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste vytvořil nové volby", "")
-        context.update({"message_active": True, "message": message, "active_elections":True, "elections":model.Election.objects.all()})
+        context = context_update()
+        context.update({"message_active": True, "message": message, "active_elections": True})
         return HttpResponse(template.render(with_metadata(context), request))
 
     if request.POST.get("first_save_changes"):
@@ -102,7 +109,9 @@ def election_management(request):
         third_round.save()
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny")
-        context.update({"message_active": True, "message": message, "active_elections":True, "elections":model.Election.objects.all()})
+        context = context_update()
+
+        context.update({"message_active": True, "message": message, "active_elections": True})
         return HttpResponse(template.render(with_metadata(context), request))
 
     if request.POST.get("second_save_changes"):
@@ -123,7 +132,8 @@ def election_management(request):
         third_round.save()
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny", "")
-        context.update({"message_active": True, "message": message, "active_elections":True, "elections":model.Election.objects.all()})
+        context = context_update()
+        context.update({"message_active": True, "message": message, "active_elections": True})
         return HttpResponse(template.render(with_metadata(context), request))
 
     if request.POST.get("third_save_changes"):
@@ -135,7 +145,8 @@ def election_management(request):
         selected_election.save()
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny", "")
-        context.update({"message_active": True, "message": message, "active_elections":True, "elections":model.Election.objects.all()})
+        context = context_update()
+        context.update({"message_active": True, "message": message, "active_elections": True})
         return HttpResponse(template.render(with_metadata(context), request))
 
     if request.POST.get("cancel_election"):
@@ -149,7 +160,8 @@ def election_management(request):
             election.delete()
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste zrušil volby")
-        context.update({"message_active": True, "message": message, "active_elections": False})
+        context = context_update()
+        context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
     return HttpResponse(template.render(with_metadata(context), request))
 
