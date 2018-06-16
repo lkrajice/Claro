@@ -1,20 +1,4 @@
-.notAButton {
-    border:none;
-    background:none
-}
 
-.glyphiconplus {
-color : green;
-font-size : 40px;
-}
-.glyphiconwrench {
-color : blue;
-font-size : 20px;
-}
-.glyphiconminus {
-color : red;
-font-size : 20px;
-}
 .searchInput {
 box-sizing : content-box;
 width : 100%;
@@ -41,8 +25,4 @@ border-radius : 5px;
 list-style : none;
 padding : 0;
 margin : 5px 0;
-}
-
-.sidebar-toggle {
-    padding-bottom: 0px !important;
 }

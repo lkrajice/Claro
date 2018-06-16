@@ -20,10 +20,11 @@
     <link rel="stylesheet" href="{% static "bower_components/admin-lte/dist/css/AdminLTE.css" %}">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="{% static "bower_components/admin-lte/dist/css/skins/skin-purple.css" %}">
+
+    <link rel="stylesheet" href="{% static "bower_components/admin-lte/dist/css/skins/skin-purple.min.css" %}">
     <!-- Glyphicons -->
     <link rel="stylesheet" href="{% static "bower_components/glyphicons/styles/glyphicons.css" %}">
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    {# <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet"> #}
 
     <link rel="stylesheet" href="{% static "css/style.css" %}">
     {% block custom_css %}{% endblock %}
@@ -40,7 +41,7 @@
     <div class="wrapper">
       <header class="main-header">
         {# Logo #}
-        <a href="index2.html" class="logo">
+        <a href="index" class="logo">
           {# Logo for shrinked sizebar #}
           <span class="logo-mini"><b>C</b></span>
           {# Logo for regular state and mobile devices #}
