@@ -47,9 +47,9 @@ Správa voleb
     </tr>
   </thead>
   <tbody>
-    <tr>
       {% if active_elections%}
         {% for election in elections %}
+          <tr>
           {% for round in election.get_rounds %}
             {% if round.compare == 0%}
               <td>{{election.title}}</td>
@@ -60,11 +60,11 @@ Správa voleb
               <td><form method="POST">{% csrf_token %}<button type="submit" class="notAButton" name="cancel_election" value="{{active_round.election_id.title}}"><span class="glyphicon glyphicon-remove glyphiconminus"></span></button></form></td>
             {% endif%}
           {% endfor %}
+          </tr>
         {% endfor %}
       {% else %}
         <td>Neprobíhají žádné volby</td>
       {% endif %}
-    </tr>
   </tbody>
 </table>
 

@@ -18,18 +18,6 @@ class Class(models.Model):
         db_table = "Class"
 
 
-class Pin(models.Model):
-    """
-    Store generated user's pins
-
-    Pins are temporary
-    """
-    pin = models.CharField(max_length=32, unique=False, help_text="Temporary pin for specific user")
-
-    class Meta:
-        db_table = "Pin"
-
-
 def user_image_name(instance, filename):
     """
     Function returning the filename for profile image of user
@@ -44,24 +32,6 @@ def user_image_name(instance, filename):
         filename in format 'profile_<id>'
     """
     return 'profile_{userid}'.format(userid=instance.id)
-
-
-class Student(models.Model):
-    """
-    Store students
-
-    When student is updated, new entry is added to the database and `active` of old one is set to
-    False & `old` is set to True.
-    """
-    class_id = models.ForeignKey(Class, on_delete=models.PROTECT)
-    pin_id = models.ForeignKey(Pin, on_delete=models.SET_NULL, null=True)
-
-    name = models.CharField(max_length=50)
-    email = models.EmailField()
-    profile_image = models.FileField(upload_to=user_image_name, help_text='Profile image')
-
-    class Meta:
-        db_table = "Student"
 
 
 class Election(models.Model):
@@ -160,6 +130,37 @@ class Round(models.Model):
     @property
     def convert_end_time(self):
         return datetime.datetime.strftime(self.end, "%Y-%m-%d")
+
+
+class Student(models.Model):
+    """
+    Store students
+
+    When student is updated, new entry is added to the database and `active` of old one is set to
+    False & `old` is set to True.
+    """
+    class_id = models.ForeignKey(Class, on_delete=models.PROTECT)
+
+    name = models.CharField(max_length=50)
+    email = models.EmailField()
+    profile_image = models.FileField(upload_to=user_image_name, help_text='Profile image')
+
+    class Meta:
+        db_table = "Student"
+
+
+class Pin(models.Model):
+    """
+    Store generated user's pins
+
+    Pins are temporary
+    """
+    student_id = models.ForeignKey(Student, on_delete=models.CASCADE)
+    round_id = models.ForeignKey(Round, on_delete=models.CASCADE)
+    pin = models.CharField(max_length=32, unique=False, help_text="Temporary pin for specific user")
+
+    class Meta:
+        db_table = "Pin"
 
 
 class Candidate(models.Model):

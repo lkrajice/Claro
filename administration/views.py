@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from votes import models as model
-from .utils import StudentDataFileParser
+from .utils import StudentDataFileParser, generate_pin
 from claro.utils import get_context_manager
 from . import utils as util
 import datetime
@@ -60,9 +60,9 @@ def election_management(request):
     if request.POST.get("new_election"):
         election_name = request.POST.get("election_name")
         date_election_start = request.POST.get("date_election_start")
-        first_round_days = int(request.POST.get("first_round_days"))
-        second_round_days = int(request.POST.get("second_round_days"))
-        third_round_days = int(request.POST.get("third_round_days"))
+        first_round_days = int(request.POST.get("first_round_days")) - 1
+        second_round_days = int(request.POST.get("second_round_days")) - 1
+        third_round_days = int(request.POST.get("third_round_days")) - 1
 
         first_round_end = (datetime.datetime.strptime(date_election_start, "%Y-%m-%d")
                            + datetime.timedelta(days=first_round_days)).date()
@@ -76,11 +76,27 @@ def election_management(request):
         election.save()
 
         types = {t.name: t for t in model.RoundType.objects.all()}
+
         model.Round.objects.bulk_create([
-            model.Round(election_id=election, type_id=types['nomination'], round_number=1, start=date_election_start, end=first_round_end),
-            model.Round(election_id=election, type_id=types['nomination'], round_number=2, start=second_round_start, end=second_round_end),
-            model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
+            model.Round(election_id=election, type_id=types['nomination'], round_number=1,
+                        start=date_election_start, end=first_round_end),
+            model.Round(election_id=election, type_id=types['nomination'], round_number=2,
+                        start=second_round_start, end=second_round_end),
+            model.Round(election_id=election, type_id=types['election'], round_number=3,
+                        start=third_round_start, end=third_round_end)
         ])
+
+        # Add pins for each student per each created round
+        rounds = election.get_rounds
+        students = model.Student.objects.all()
+        pins = []
+        for election_round in rounds:
+            for student in students:
+                pins.append(model.Pin(pin=generate_pin(),
+                            student_id=student,
+                            round_id=election_round))
+        model.Pin.objects.bulk_create(pins)
+
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste vytvořil nové volby", "")
         context = context_update()
         context.update({"message_active": True, "message": message, "active_elections": True})
@@ -182,9 +198,24 @@ def pupil_management(request):
         st_name = request.POST.get("student_name")
         st_email = request.POST.get("student_email")
         st_class = model.Class.objects.get(shortname=st_class_input)
-        pin = model.Pin(pin=StudentDataFileParser.generate_pin())
-        pin.save()
-        model.Student(class_id=st_class, pin_id=pin, name=st_name, email=st_email, profile_image="NaN").save()
+
+        # pin = model.Pin(pin=StudentDataFileParser.generate_pin())
+        # pin.save()
+
+        model.Student(class_id=st_class, name=st_name, email=st_email, profile_image="NaN").save()
+        try:
+            election = model.Election.objects.latest('id')
+            student = model.Student.objects.latest('id')
+
+            test = [model.Pin(student_id=student, round_id=r, pin=generate_pin()) for r in election.get_rounds]
+            print(', '.join(map(str, [m.pin for m in test])))
+            model.Pin.objects.bulk_create(test)
+
+            # pins = [model.Pin(student_id=student, round_id=r, pin=generate_pin()) for r in election.get_rounds]
+            # model.Pin.objects.bulk_create(pins)
+        except model.Election.DoesNotExist:
+            pass
+
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste přidal studenta", "")
         context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
