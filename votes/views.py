@@ -9,7 +9,7 @@ from django.template import loader
 
 from claro.utils import get_context_manager
 
-from .models import Class, Student, Election, Round, Vote, Pin
+from .models import Class, Student, Election, Round, Vote, Pin, Candidate
 
 
 with_metadata = get_context_manager()
@@ -165,10 +165,6 @@ def proccess_vote(request):
     """
     template = loader.get_template('class_overview.html')
 
-    me = Student.objects.get(id=505)
-    print(me.name)
-    print(', '.join(str([pin.pin, pin.round_id.round_number, pin.round_id.type_id.name]) for pin in Pin.objects.all().filter(student_id=me)))
-
     required = ['student_id', 'email', 'pin']
     if request.method != 'POST' or any(req not in request.POST for req in required):
         return get_error_response(request, "Špatný požadavek")
@@ -195,9 +191,16 @@ def proccess_vote(request):
         return get_error_response(
             request,
             "Aktivace pinu selhala. Zkontrolujte prosím jeho správnost.")
+    pin = pins[0]
+
+    try:
+        candidate = Candidate.objects.get(student_id=student, round_id=active)
+    except Candidate.DoesNotExist:
+        Candidate(student_id=student, round_id=active).save()
+        candidate = Candidate.objects.latest('id')
+
+    Vote(vote_for=candidate).save()
+    pin.delete()
 
     # Pin and email is valid
     return get_error_response(request, "Pin prošel.")
-
-
-    return HttpResponse(template.render(with_metadata({}), request))
