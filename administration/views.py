@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from votes import models as model
-from .utils import StudentDataFileParser
+from .utils import StudentDataFileParser, generate_pin
 from claro.utils import get_context_manager
 import datetime
 
@@ -51,12 +51,28 @@ def election_management(request):
 
         all_round_types = model.RoundType.objects.all()
         types = {t.name: t for t in all_round_types}
+
         model.Round.objects.bulk_create([
-            model.Round(election_id=election, type_id=types['nomination'], round_number=1, start=date_election_start, end=first_round_end),
-            model.Round(election_id=election, type_id=types['nomination'], round_number=2, start=second_round_start, end=second_round_end),
-            model.Round(election_id=election, type_id=types['election'], round_number=3, start=third_round_start, end=third_round_end)
+            model.Round(election_id=election, type_id=types['nomination'], round_number=1,
+                        start=date_election_start, end=first_round_end),
+            model.Round(election_id=election, type_id=types['nomination'], round_number=2,
+                        start=second_round_start, end=second_round_end),
+            model.Round(election_id=election, type_id=types['election'], round_number=3,
+                        start=third_round_start, end=third_round_end)
         ])
-        #context.update({'zprava':True})
+
+        rounds = model.Round.objects.all().filter(election_id=election)
+        students = model.Student.objects.all()
+
+        pins = []
+        for election_round in rounds:
+            for student in students:
+                pins.append(model.Pin(pin=generate_pin(),
+                            student_id=student,
+                            round_id=election_round))
+
+        model.Pin.objects.bulk_create(pins)
+
     return HttpResponse(template.render(with_metadata(context), request))
 
 
