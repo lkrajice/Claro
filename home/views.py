@@ -49,13 +49,9 @@ def home_welcome(request):
     except Election.DoesNotExist:
         context['election'] = None
 
-
     return HttpResponse(template.render(with_metadata(context), request))
 
-
-def home_about(request):
-    pass
-
-
 def home_help(request):
-    pass
+    template = loader.get_template('home_help.html')
+    context = {}
+    return HttpResponse(template.render(with_metadata(context), request))
