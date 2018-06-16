@@ -47,7 +47,17 @@ class Election(models.Model):
 
     @property
     def get_rounds(self):
-        return Round.objects.all().filter(election_id=self)
+        try:
+            return Round.objects.all().filter(election_id=self)
+        except Round.DoesNotExist:
+            return None
+
+    @property
+    def active_round(self):
+        for election_round in self.get_rounds:
+            if election_round.compare == 0:
+                return election_round
+        return None
 
     @property
     def get_first_round(self):
