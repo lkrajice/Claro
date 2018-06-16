@@ -1,6 +1,5 @@
 function resize()
 {
-    console.log('help');
     let divs = document.getElementsByClassName("class-link-wrapper");
     for (let i = 0; i < divs.length; i++) {
         let div = divs[i];
@@ -15,6 +14,19 @@ function make_loop() {
     setTimeout(function() {
         clearInterval(refresh);
     }, 1000);
+}
+
+function trigger_vote_modal(element) {
+    header = $(element).find("div.card-body > h4.card-title")
+    student_name = header.text()
+    student_id = header.attr("data-id")
+
+    modal = $("#myModal");
+    modal.find("span.modal-student-name").each(function() {
+        $(this).text(student_name)
+    })
+    modal.find("#modal_student_id").val(student_id)
+    modal.modal();
 }
 
 $(document).ready(function() {

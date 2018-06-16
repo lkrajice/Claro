@@ -9,7 +9,7 @@ from django.template import loader
 
 from claro.utils import get_context_manager
 
-from .models import Class, Student, Election, Round, Vote
+from .models import Class, Student, Election, Round, Vote, Pin
 
 
 with_metadata = get_context_manager()
@@ -138,8 +138,6 @@ def class_overview(request):
         Load all students from given class willing to candidate
 
     """
-    class_name = request.GET.get('name', None)
-
     template = loader.get_template('class_overview.html')
 
     class_name = request.GET.get('name', None)
@@ -159,3 +157,47 @@ def class_overview(request):
 
     context.update(get_sidebar_class_context())
     return HttpResponse(template.render(with_metadata(context), request))
+
+
+def proccess_vote(request):
+    """
+    Called when user want to vote for someone
+    """
+    template = loader.get_template('class_overview.html')
+
+    me = Student.objects.get(id=505)
+    print(me.name)
+    print(', '.join(str([pin.pin, pin.round_id.round_number, pin.round_id.type_id.name]) for pin in Pin.objects.all().filter(student_id=me)))
+
+    required = ['student_id', 'email', 'pin']
+    if request.method != 'POST' or any(req not in request.POST for req in required):
+        return get_error_response(request, "Špatný požadavek")
+
+    student_id = int(request.POST.get("student_id"))
+    email = request.POST.get("email")
+    pin_code = request.POST.get("pin")
+
+    try:
+        student = Student.objects.get(id=student_id)
+        election = Election.objects.latest('id')
+    except Student.DoesNotExist:
+        return get_error_response(request, "Student, pro kterého hlasujete, neexistuje")
+    except Election.DoesNotExist:
+        return get_error_response(request, "V systému nejsou žádné volby")
+
+    active = election.active_round
+    if active is None:
+        return get_error_response(request, "Momentálně neprobíhají žádné volby")
+
+    pins_list = Pin.objects.all().filter(pin=pin_code)
+    pins = [pin for pin in pins_list if pin.student_id.email == email and pin.round_id.compare == 0]
+    if len(pins) == 0:
+        return get_error_response(
+            request,
+            "Aktivace pinu selhala. Zkontrolujte prosím jeho správnost.")
+
+    # Pin and email is valid
+    return get_error_response(request, "Pin prošel.")
+
+
+    return HttpResponse(template.render(with_metadata({}), request))
