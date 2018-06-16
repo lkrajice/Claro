@@ -111,11 +111,12 @@ class Round(models.Model):
         Returns:
             (int): -1 if round took place, 0 if active, 1 if round will become active
         """
-        now = datetime.datetime.now().date()
-        if now < self.start:
-            print(now, self.start)
+        now = datetime.datetime.now()
+        start_in_datetime = datetime.datetime.combine(self.start, datetime.datetime.min.time())
+        end_in_datetime = datetime.datetime.combine(self.end, datetime.datetime.max.time())
+        if now < start_in_datetime:
             return 1;
-        if self.end < now:
+        if end_in_datetime < now:
             return -1;
         return 0;
 
