@@ -194,7 +194,6 @@ class Vote(models.Model):
     After election have ended, votes should be deleted to keep anonymity.
     """
     voting_id = models.ForeignKey(Round, on_delete=models.PROTECT)
-    student_id = models.ForeignKey(Student, on_delete=models.CASCADE)
     vote_for = models.ForeignKey(Candidate, on_delete=models.CASCADE)
 
     class Meta:
