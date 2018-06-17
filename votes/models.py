@@ -180,9 +180,6 @@ class Candidate(models.Model):
     student_id = models.ForeignKey(Student, on_delete=models.CASCADE)
     round_id = models.ForeignKey(Round, on_delete=models.PROTECT)
 
-    votes = models.PositiveSmallIntegerField(help_text="Year when election took place")
-    accepted = models.BooleanField()
-
     class Meta:
         db_table = "Candidate"
 
@@ -193,7 +190,6 @@ class Vote(models.Model):
 
     After election have ended, votes should be deleted to keep anonymity.
     """
-    voting_id = models.ForeignKey(Round, on_delete=models.PROTECT)
     vote_for = models.ForeignKey(Candidate, on_delete=models.CASCADE)
 
     class Meta:

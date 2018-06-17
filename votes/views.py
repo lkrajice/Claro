@@ -9,7 +9,7 @@ from django.template import loader
 
 from claro.utils import get_context_manager
 
-from .models import Class, Student, Election, Round, Vote, Pin
+from .models import Class, Student, Election, Round, Vote, Pin, Candidate
 
 
 with_metadata = get_context_manager()
@@ -143,20 +143,48 @@ def class_overview(request):
     class_name = request.GET.get('name', None)
     context = {
         'class_name': class_name,
+        'disable_votes': False,
+        'reason': ''
     }
 
     if class_name is not None:
         try:
             cls = Class.objects.get(shortname=class_name)
+            election = Election.objects.latest('id')
+            rounds = election.get_rounds
         except Class.DoesNotExist:
             msg = "Třída '%s' nebyla nalezena, zkontrolujte si prosím název" % class_name
             return get_error_response(request, msg)
+        except Election.DoesNotExist:
+            context['reason'] = 'V systému zatím nejsou žádné volby'
+        else:
+            rounds = election.get_rounds
+            rendered_round = rounds[1] if rounds[0].compare == -1 else rounds[0]
+            context['round'] = rendered_round
 
-        students = Student.objects.all().filter(class_id=cls)
-        context['students'] = students
+            # Check if dissabling the the votings is neccesary
+            if rendered_round.compare == 1:
+                msg = "Právě neprobíhají žádné třídní volby, začnou počátkem dne {:%d. %m. %Y}"
+                context['reason'] = msg.format(rendered_round.start)
+            elif rendered_round.compare == -1:
+                msg = "Právě neprobíhají žádné třídní volby, poslední kolo skončilo {:%d. %m. %Y}."
+                context['reason'] = msg.format(rendered_round.end)
+
+            candidates = Candidate.objects.all().filter(student_id__class_id=cls)
+            if rendered_round.round_number == 2 and len(candidates) < 1:
+                # No need for this class to take part in second nomination round
+                context['reason'] = "Tato třída se neúčastní druhého kola"
+
+        context['disable_votes'] = len(context['reason']) > 0
+        context['students'] = Student.objects.all().filter(class_id=cls)
 
     context.update(get_sidebar_class_context())
     return HttpResponse(template.render(with_metadata(context), request))
+
+
+####################################################################################################
+# Request proccessing
+####################################################################################################
 
 
 def proccess_vote(request):
@@ -164,10 +192,6 @@ def proccess_vote(request):
     Called when user want to vote for someone
     """
     template = loader.get_template('class_overview.html')
-
-    me = Student.objects.get(id=505)
-    print(me.name)
-    print(', '.join(str([pin.pin, pin.round_id.round_number, pin.round_id.type_id.name]) for pin in Pin.objects.all().filter(student_id=me)))
 
     required = ['student_id', 'email', 'pin']
     if request.method != 'POST' or any(req not in request.POST for req in required):
@@ -195,9 +219,16 @@ def proccess_vote(request):
         return get_error_response(
             request,
             "Aktivace pinu selhala. Zkontrolujte prosím jeho správnost.")
+    pin = pins[0]
+
+    try:
+        candidate = Candidate.objects.get(student_id=student, round_id=active)
+    except Candidate.DoesNotExist:
+        Candidate(student_id=student, round_id=active).save()
+        candidate = Candidate.objects.latest('id')
+
+    Vote(vote_for=candidate).save()
+    pin.delete()
 
     # Pin and email is valid
     return get_error_response(request, "Pin prošel.")
-
-
-    return HttpResponse(template.render(with_metadata({}), request))

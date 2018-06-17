@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load board %}
 
 {% block title %}
 Welcome on the site!
@@ -51,9 +52,7 @@ Welcome on the site!
           </ul>
         </li>
         {% endfor %}
-
       </ul>
-
     </li>
     {% endfor %}
   </li>
@@ -95,87 +94,6 @@ Welcome on the site!
       <hr />
     {% endfor %}
   {% else %}
-
-  <div class="row">
-    {% for student in students %}
-    <div class="col-md-4 col-sm-6 col-xs-12">
-      <div class="card">
-        <a href="#" onclick="trigger_vote_modal(this)">
-          <img class="card-img-top" src="{% static "image/profile.jpg" %}" alt="Card image" style="max-width: 100%; max-height: 100%">
-          {# Do not change the structure. Used by JS. #}
-          <div class="card-body">
-            <h4 class="card-title" data-id="{{ student.id }}">{{ student.name }}</h4>
-            <p class="card-text">Aktuální počet bodů: 5</p>
-          </div>
-        </a>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
+    {% students_board students round disable_votes reason %}
   {% endif %}
-
-{# Students id and name is filled and then the modal is triggered by clicking on the card. #}
-<!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h2 class="modal-title">
-          <span class="modal-student-name"></span> - Udělení hlasu
-        </h2>
-      </div>
-      <div class="modal-body">
-        <p>Právě se chystáte udělit svůj hlas studentce/studentu <span class="modal-student-name"></span>.
-        </p>
-        <p>Tato akce</p>
-        <ul>
-          <li>povede k udělení bodu dané osobě,</li>
-          <li>vám sebere váš jediný hlas, obnoví se ale v dalším kole hlasování,</li>
-        </ul>
-        <p><span style="color: red"><b>Tato akce nemůže být vrácena!</b></span></p>
-        <p>
-          Emailová adresa v tomto případě slouží jako další faktor pro ověření
-          vašeho práva hlasovat. Je nutné zkontrolovat, jestli je vaší adrese
-          opravdu přiřazen vložený pin. Spojitost emailu a hlasu je vymazána,
-          hlasování je tedy kompletně anonymní.
-        </p>
-        <p>
-          Přejete-li si pokračovat, zadejte níže váš pin a email. Potřebujete-li
-          pomoct, navštivte <a href="/home/help">sekci pro rychlou nápovědu</a>.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <form method="POST" action="proccess_vote">
-          {% csrf_token %}
-          <div class="input-group">
-            <div class="input-group-addon">
-              <i class="fa fa-at"></i>
-            </div>
-
-            <input id="modal_email" type="text" name="email" class="form-control" required="True" placeholder="Váš školní mail"/>
-          </div>
-
-          <br />
-
-          <div class="input-group">
-            <div class="input-group-addon">
-              <i class="fa fa-lock"></i>
-            </div>
-
-            <input id="modal_pin" type="text" name="pin" class="form-control" required="True" placeholder="Váš osobní pin"/>
-
-            <span class="input-group-btn">
-              <button type="submit" class="btn btn-danger btn-flat">Hlasovat</button>
-            </span>
-          </div>
-
-          <input id="modal_student_id" type="hidden" name="student_id" required="True" />
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 {% endblock %}
