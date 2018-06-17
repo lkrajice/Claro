@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 """Define db model for parlament application"""
 import datetime
+import logging
+
+from claro.utils import Scheduler
 
 from django.db import models
+
+
+LOG = logging.getLogger()
 
 
 class Class(models.Model):
@@ -193,3 +199,40 @@ class Vote(models.Model):
 
     class Meta:
         db_table = "Vote"
+
+
+# Schedule callbacks setup
+
+def candidates_to_second_round(old_round, new_round):
+    pass
+
+
+def candidates_to_third_round(old_round, new_round):
+    pass
+
+
+def election_ended():
+    pass
+
+
+def schedule_db_updates():
+    """
+    Setup Scheduler to update candidate tables when round started
+    """
+    try:
+        election = Election.objects.latest('id')
+    except Election.DoesNotExist:
+        LOG.info("No db schedule updates were set. Election table is empty.")
+        return
+    rounds = election.get_rounds
+    if rounds is None or len(rounds) == 0:
+        LOG.info("No db schedule updates were set. Election has no rounds.")
+        return
+
+    Scheduler.add_callback(rounds[1].start, candidates_to_second_round, 'candidate-to_second',
+                           old_round=rounds[0], new_round=rounds[1])
+
+    Scheduler.add_callback(rounds[2].start, candidates_to_third_round, 'candidate-to_third',
+                           old_round=rounds[1], new_round=rounds[2])
+
+    Scheduler.add_callback(rounds[2].end, candidates_to_third_round, 'election_ended')
