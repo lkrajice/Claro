@@ -16,7 +16,11 @@ with_metadata = get_context_manager()
 
 
 def index(request):
+    is_logged = request.session.get('pass_verified', False)
+    if not is_logged:
+        login(request)
     context = {}
+    request.session['pass_verified'] = False
     template = loader.get_template("administration_index.html")
     return HttpResponse(template.render(with_metadata(context), request))
 
@@ -54,6 +58,10 @@ def context_update():
 
 
 def election_management(request):
+    is_logged = request.session.get('pass_verified', False)
+    if not is_logged:
+        login(request)
+
     context = context_update()
     template = loader.get_template("administration_electionmanagement.html")
 
@@ -183,6 +191,10 @@ def election_management(request):
 
 
 def pupil_management(request):
+    is_logged = request.session.get('pass_verified', False)
+    if not is_logged:
+        login(request)
+
     context = {"message_active": False}
     template = loader.get_template("administration_pupilmanagement.html")
     students = model.Student.objects.all()
@@ -238,4 +250,19 @@ def pupil_management(request):
         StudentDataFileParser.proccess_file(filepath)
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste nahrál soubor")
         context.update({"message_active": True, "message": message})
+    return HttpResponse(template.render(with_metadata(context), request))
+
+
+def login(request):
+    request.session['pass_verified'] = False
+    admin_pwd = "administrace"
+    template = loader.get_template("login.html")
+    context = {}
+
+    if request.POST.get("log_in"):
+        pwd = request.POST.get("user_type_password")
+        if pwd == admin_pwd:
+            request.session['pass_verified'] = True
+            index(request)
+
     return HttpResponse(template.render(with_metadata(context), request))

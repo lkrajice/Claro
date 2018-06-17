@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^administration', views.index),
     url(r'^electionmanagement', views.election_management),
     url(r'^pupilmanagement', views.pupil_management),
+    url(r'^login', views.login),
     url(r'^', views.index)
 ]
 
