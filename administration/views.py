@@ -215,19 +215,6 @@ def pupil_management(request):
         # pin.save()
 
         model.Student(class_id=st_class, name=st_name, email=st_email, profile_image="NaN").save()
-        try:
-            election = model.Election.objects.latest('id')
-            student = model.Student.objects.latest('id')
-
-            test = [model.Pin(student_id=student, round_id=r, pin=generate_pin()) for r in election.get_rounds]
-            print(', '.join(map(str, [m.pin for m in test])))
-            model.Pin.objects.bulk_create(test)
-
-            # pins = [model.Pin(student_id=student, round_id=r, pin=generate_pin()) for r in election.get_rounds]
-            # model.Pin.objects.bulk_create(pins)
-        except model.Election.DoesNotExist:
-            pass
-
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste přidal studenta", "")
         context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
