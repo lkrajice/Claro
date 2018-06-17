@@ -143,20 +143,40 @@ def class_overview(request):
     class_name = request.GET.get('name', None)
     context = {
         'class_name': class_name,
+        'disable_votes': False,
+        'reason': ''
     }
 
     if class_name is not None:
         try:
             cls = Class.objects.get(shortname=class_name)
+            election = Election.objects.latest('id')
+            rounds = election.get_rounds
         except Class.DoesNotExist:
             msg = "Třída '%s' nebyla nalezena, zkontrolujte si prosím název" % class_name
             return get_error_response(request, msg)
+        except Election.DoesNotExist:
+            context['reason'] = 'V systému zatím nejsou žádné volby'
+        else:
+            rounds = election.get_rounds
+            rendered_round = rounds[1] if rounds[0].compare == -1 else rounds[0]
+            context['round'] = rendered_round
 
-        context['disable_votes'] = False
-        context['reason'] = "XXX"
+            # Check if dissabling the the votings is neccesary
+            if rendered_round.compare == 1:
+                msg = "Právě neprobíhají žádné třídní volby, začnou počátkem dne {:%d. %m. %Y}"
+                context['reason'] = msg.format(rendered_round.start)
+            elif rendered_round.compare == -1:
+                msg = "Právě neprobíhají žádné třídní volby, poslední kolo skončilo {:%d. %m. %Y}."
+                context['reason'] = msg.format(rendered_round.end)
 
-        students = Student.objects.all().filter(class_id=cls)
-        context['students'] = students
+            candidates = Candidate.objects.all().filter(student_id__class_id=cls)
+            if rendered_round.round_number == 2 and len(candidates) < 1:
+                # No need for this class to take part in second nomination round
+                context['reason'] = "Tato třída se neúčastní druhého kola"
+
+        context['disable_votes'] = len(context['reason']) > 0
+        context['students'] = Student.objects.all().filter(class_id=cls)
 
     context.update(get_sidebar_class_context())
     return HttpResponse(template.render(with_metadata(context), request))
