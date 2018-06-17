@@ -12,7 +12,7 @@ class Class(models.Model):
     Values in this table are constant, they should never be removed, but new classes may be added.
     """
     shortname = models.CharField(max_length=10, unique=True, help_text="Abbreviation of a class")
-    classtype = models.CharField(max_length=3, unique=False, help_text="Class type: V, S, I or K...")
+    classtype = models.CharField(max_length=3, unique=False, help_text="Class type: V, S, I, K...")
 
     class Meta:
         db_table = "Class"
@@ -110,11 +110,10 @@ class Round(models.Model):
         start_in_datetime = datetime.datetime.combine(self.start, datetime.datetime.min.time())
         end_in_datetime = datetime.datetime.combine(self.end, datetime.datetime.max.time())
         if now < start_in_datetime:
-            return 1;
+            return 1
         if end_in_datetime < now:
-            return -1;
-        return 0;
-
+            return -1
+        return 0
 
     @property
     def percent(self):

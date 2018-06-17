@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 import collections
 
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 
@@ -38,7 +37,7 @@ def get_error_response(request, message):
     return HttpResponse(template.render(with_metadata(context), request))
 
 
-### VIEWS #########################################################################################
+# VIEWS ###########################################################################################
 
 def overview(request):
     """
@@ -191,8 +190,6 @@ def proccess_vote(request):
     """
     Called when user want to vote for someone
     """
-    template = loader.get_template('class_overview.html')
-
     required = ['student_id', 'email', 'pin']
     if request.method != 'POST' or any(req not in request.POST for req in required):
         return get_error_response(request, "Špatný požadavek")

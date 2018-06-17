@@ -24,4 +24,3 @@ def get_context_manager(*args):
         context['metadata_active_app'] = caller_app
         return context
     return with_metadata
-

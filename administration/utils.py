@@ -2,7 +2,6 @@
 """
 Contains parser
 """
-import os
 import random
 
 from string import digits
@@ -101,4 +100,3 @@ class MessageToPage:
         self.message_bold = message_bold
         self.message_text = message_text
         self.message_vars = message_vars
-
