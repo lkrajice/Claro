@@ -152,11 +152,19 @@ def class_overview(request):
             msg = "Třída '%s' nebyla nalezena, zkontrolujte si prosím název" % class_name
             return get_error_response(request, msg)
 
+        context['disable_votes'] = False
+        context['reason'] = "XXX"
+
         students = Student.objects.all().filter(class_id=cls)
         context['students'] = students
 
     context.update(get_sidebar_class_context())
     return HttpResponse(template.render(with_metadata(context), request))
+
+
+####################################################################################################
+# Request proccessing
+####################################################################################################
 
 
 def proccess_vote(request):
