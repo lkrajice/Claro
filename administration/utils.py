@@ -102,4 +102,3 @@ class MessageToPage:
         self.message_text = message_text
         self.message_vars = message_vars
 
-
