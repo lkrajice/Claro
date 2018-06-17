@@ -6,6 +6,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{% block title %}{{ title|default:"Welcome!" }} | Claro{% endblock %}</title>
+
+    <link rel="shortcut icon" href="{% static "image/favicon/icon-small.png" %}" type="image/x-icon">
+
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap -->
@@ -72,7 +75,8 @@
             <li class="header">HLAVNÍ NAVIGACE</li>
 
             {# Start - Administration app list #}
-            <li class="treeview {% if metadata_active_app == "administration" %}active{% endif %}">
+            {% if metadata_active_app == "administration" %}
+            <li class="treeview active">
               <a href="#">
                 <i class="fa fa-group"></i> <span>Administrace</span>
               </a>
@@ -95,6 +99,7 @@
                 </li>
               </ul>
             </li>
+            {% endif %}
             {# End - Administration app list #}
 
             {# Start - Home app list #}
@@ -107,11 +112,6 @@
                 <li {% if metadata_active_view == "home_welcome" %}class="active"{% endif %}>
                   <a href="/home/welcome">
                     <i class="fa fa-circle-o"></i> Úvodní stránka
-                  </a>
-                </li>
-                <li {% if metadata_active_view == "home_about" %}class="active"{% endif %}>
-                  <a href="/home/about">
-                    <i class="fa fa-circle-o"></i> O stránce
                   </a>
                 </li>
                 <li {% if metadata_active_view == "home_help" %}class="active"{% endif %}>
@@ -130,15 +130,15 @@
               </a>
               {# Votes app list - submenu #}
               <ul class="treeview-menu">
-                {% if metadata_active_view == "election_overview" or metadata_active_view == "nomination_overview" %}
-                <li class="active">
-                {% else %}
-                <li>
-                {% endif %}
-                  <a href="/votes/overview">
-                    <i class="fa fa-circle-o"></i> Přehled aktuálnich voleb
-                  </a>
-                </li>
+                {# {% if metadata_active_view == "election_overview" or metadata_active_view == "nomination_overview" %} #}
+                {# <li class="active"> #}
+                {# {% else %} #}
+                {# <li> #}
+                {# {% endif %} #}
+                {#   <a href="/votes/overview"> #}
+                {#     <i class="fa fa-circle-o"></i> Přehled aktuálnich voleb #}
+                {#   </a> #}
+                {# </li> #}
                 <li {% if metadata_active_view == "class_overview" %}class="active" {% endif %}>
                   <a href="/votes/class">
                     <i class="fa fa-circle-o"></i> Přehled tříd

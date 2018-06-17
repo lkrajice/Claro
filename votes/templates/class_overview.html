@@ -47,7 +47,7 @@ Welcome on the site!
           </a>
           <ul class="treeview-menu">
           {% for class in classes %}
-            <li><a href="#"><i class="fa fa-circle-o"></i> {{ class }}</a></li>
+            <li><a href="class?name={{ class }}"><i class="fa fa-circle-o"></i> {{ class }}</a></li>
           {% endfor %}
           </ul>
         </li>
@@ -78,7 +78,11 @@ Welcome on the site!
       <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
           <div class="info-box">
+            {% if letter == "V*" %}
+            <span class="info-box-icon bg-blue" style="padding: 5px 0 0 7px">
+            {% else %}
             <span class="info-box-icon bg-maroon" style="padding: 5px 0 0 7px">
+            {% endif %}
               {{ letter|cut:"*" }}{{ grade }}*
             </span>
 

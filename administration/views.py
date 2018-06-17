@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 import os
+import datetime
+
 from django.template import loader
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+
 from votes import models as model
-from .utils import StudentDataFileParser, generate_pin
 from claro.utils import get_context_manager
+
+from .utils import StudentDataFileParser, generate_pin
 from . import utils as util
-import datetime
 
 
 BASE_CONTEXT = {}
@@ -18,9 +21,11 @@ with_metadata = get_context_manager()
 def index(request):
     is_logged = request.session.get('pass_verified', False)
     if not is_logged:
-        login(request)
+        new_request, logged = login(request)
+        if not logged:
+            return new_request
+
     context = {}
-    request.session['pass_verified'] = False
     template = loader.get_template("administration_index.html")
     return HttpResponse(template.render(with_metadata(context), request))
 
@@ -60,7 +65,9 @@ def context_update():
 def election_management(request):
     is_logged = request.session.get('pass_verified', False)
     if not is_logged:
-        login(request)
+        new_request, logged = login(request)
+        if not logged:
+            return new_request
 
     context = context_update()
     template = loader.get_template("administration_electionmanagement.html")
@@ -106,6 +113,7 @@ def election_management(request):
         model.Pin.objects.bulk_create(pins)
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste vytvořil nové volby", "")
+        model.schedule_db_updates()
         context = context_update()
         context.update({"message_active": True, "message": message, "active_elections": True})
         return HttpResponse(template.render(with_metadata(context), request))
@@ -133,6 +141,7 @@ def election_management(request):
         third_round.save()
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny")
+        model.schedule_db_updates()
         context = context_update()
 
         context.update({"message_active": True, "message": message, "active_elections": True})
@@ -156,6 +165,7 @@ def election_management(request):
         third_round.save()
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny", "")
+        model.schedule_db_updates()
         context = context_update()
         context.update({"message_active": True, "message": message, "active_elections": True})
         return HttpResponse(template.render(with_metadata(context), request))
@@ -169,6 +179,7 @@ def election_management(request):
         selected_election.save()
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste uložil změny", "")
+        model.schedule_db_updates()
         context = context_update()
         context.update({"message_active": True, "message": message, "active_elections": True})
         return HttpResponse(template.render(with_metadata(context), request))
@@ -184,6 +195,7 @@ def election_management(request):
             election.delete()
 
         message = util.MessageToPage("success", "Výborně!", "Úspěšně jste zrušil volby")
+        model.schedule_db_updates()
         context = context_update()
         context.update({"message_active": True, "message": message})
         return HttpResponse(template.render(with_metadata(context), request))
@@ -193,7 +205,9 @@ def election_management(request):
 def pupil_management(request):
     is_logged = request.session.get('pass_verified', False)
     if not is_logged:
-        login(request)
+        new_request, logged = login(request)
+        if not logged:
+            return new_request
 
     context = {"message_active": False}
     template = loader.get_template("administration_pupilmanagement.html")
@@ -241,8 +255,11 @@ def pupil_management(request):
 
 
 def login(request):
+    """
+    Check if user is logged in, Returns HttpResponse if not, othervise True
+    """
     request.session['pass_verified'] = False
-    admin_pwd = "administrace"
+    admin_pwd = "WeLoveAnime"
     template = loader.get_template("login.html")
     context = {}
 
@@ -251,5 +268,6 @@ def login(request):
         if pwd == admin_pwd:
             request.session['pass_verified'] = True
             index(request)
+            return None, True
 
-    return HttpResponse(template.render(with_metadata(context), request))
+    return HttpResponse(template.render(with_metadata(context), request)), False
