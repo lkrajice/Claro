@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+Hlavni stranka administrace
+{% endblock %}
+
+
+{% block custom_css %}
+{% endblock %}
+
+
+{% block nav_right_top_list %}
+{% endblock %}
+
+
+{% block custom_sidebar_list %}
+{% endblock %}
+
+
+{% block header %}
+<h1>Vítejte na úvodní stránce<small>Version 2.0</small></h1>
+<ol class="breadcrumb">
+  <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+  <li class="active">Dashboard</li>
+</ol>
+{% endblock %}
+
+
+{% block content %}
+<form method="POST">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="user_type_password">Heslo:</label>
+    <input type="text" name="user_type_password" class="form-control" id="user_type_password" required/>
+    <input type="submit" value="Odeslat" name="log_in">
+  </div>
+</form>
+{% endblock %}
